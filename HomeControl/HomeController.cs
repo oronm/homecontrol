@@ -4,20 +4,26 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Helpers;
+using HomeControl.Common;
 
 namespace HomeControl
 {
     public class HomeController : IHomeController
     {
         private IDictionary<string, PersonState> state = null;
+        private IPresnceIdentifier identifier;
 
         public HomeController(IPresnceIdentifier identifier)
         {
+            this.identifier = identifier;
             identifier.PersonArrived += identifier_PersonArrived;
             identifier.PersonLeft += identifier_PersonLeft;
 
-            identifier.registerPerson("oron");
-            identifier.registerPerson("galia");
+            identifier.registerPerson(new PersonRegistration()
+            {
+                personName = "oron",
+                devicesDetails = new IDeviceDetails[] { new WifiDeviceDetails() { DeviceId = "D4-F4-6F-23-93-09", DeviceName = "Oron's iPhone" } }
+            });
 
             state = identifier.getState();
         }

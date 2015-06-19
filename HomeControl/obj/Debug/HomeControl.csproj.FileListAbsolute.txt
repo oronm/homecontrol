@@ -5,3 +5,11 @@ E:\Dev\HomeControl\HomeControl\bin\Debug\Helpers.dll
 E:\Dev\HomeControl\HomeControl\bin\Debug\Helpers.pdb
 E:\Dev\HomeControl\HomeControl\obj\Debug\HomeControl.dll
 E:\Dev\HomeControl\HomeControl\obj\Debug\HomeControl.pdb
+E:\Dev\HomeControl\HomeControl\bin\Debug\Castle.Core.dll
+E:\Dev\HomeControl\HomeControl\bin\Debug\Castle.Windsor.dll
+E:\Dev\HomeControl\HomeControl\bin\Debug\HomeControl.Common.dll
+E:\Dev\HomeControl\HomeControl\bin\Debug\WifiDeviceIdentifier.dll
+E:\Dev\HomeControl\HomeControl\bin\Debug\HomeControl.Common.pdb
+E:\Dev\HomeControl\HomeControl\bin\Debug\WifiDeviceIdentifier.pdb
+E:\Dev\HomeControl\HomeControl\bin\Debug\Castle.Core.xml
+E:\Dev\HomeControl\HomeControl\bin\Debug\Castle.Windsor.xml

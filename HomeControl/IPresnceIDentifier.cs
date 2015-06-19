@@ -7,12 +7,11 @@ namespace HomeControl
 {
     public interface IPresnceIdentifier
     {
-        void PersonConnected(string p);
+        void DeviceConnected(string p);
         event EventHandler<string> PersonArrived;
         event EventHandler<string> PersonLeft;
         IDictionary<string, PersonState> getState();
 
-        void registerPerson(string personName);
-        void registerPerson(string personName, PersonStateConfiguration configuration);
+        void registerPerson(PersonRegistration registration);
     }
 }

@@ -12,6 +12,7 @@ namespace HomeControl
         public string name;
         public DateTime lastSeen;
         public PersonStateConfiguration configuration;
+
         public PersonState(string name, PersonStateConfiguration configuration)
         {
             if (String.IsNullOrEmpty(name)) throw new ArgumentNullException("name");

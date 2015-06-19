@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using HomeControl.Common;
+using Castle.Facilities.TypedFactory;
 
 namespace HomeControl
 {
@@ -27,20 +29,36 @@ namespace HomeControl
     }
 
 
-    public class PersonIdentifier : IPresnceIdentifier
+    public class PresenceIdentifier : IPresnceIdentifier
     {
         private ConcurrentDictionary<string, PersonState> peopleState = new ConcurrentDictionary<string, PersonState>();
+        private ConcurrentDictionary<IDeviceDetails, string> devicesState = new ConcurrentDictionary<IDeviceDetails, string>();
         private PersonStateConfiguration DEFAULT_CONFIGURATION { get { return new PersonStateConfiguration(); } }
 
         public event EventHandler<string> PersonArrived;
         public event EventHandler<string> PersonLeft;
+        private IDevicePresenceFactory devicePresenceFactory;
 
-        public void PersonConnected(string personName)
+        public PresenceIdentifier(IDevicePresenceFactory devicePresenceFactory)
+        {
+            this.devicePresenceFactory = devicePresenceFactory;
+        }
+
+        public void OnDeviceIdentified(object sender, DeviceIdentifiedEventArgs args)
+        {
+            string personDevice;
+            if (devicesState.TryGetValue(args.deviceDeatils, out personDevice))
+            {
+                DeviceConnected(personDevice);
+            }
+        }
+
+        public void DeviceConnected(string personName)
         {
             DateTime connectionTime = DateTime.UtcNow;
             if (string.IsNullOrWhiteSpace(personName)) return;
+            if (!peopleState.ContainsKey(personName)) return;
 
-            if (!peopleState.ContainsKey(personName)) registerPerson(personName);
             PersonState person = peopleState[personName];
 
             bool isPresent = person.IsPresent();
@@ -86,17 +104,31 @@ namespace HomeControl
             return peopleState.Select(kvp => kvp).ToDictionary((kvp) => kvp.Key, (kvp2) => kvp2.Value);
         }
 
-        public void registerPerson(string personName, PersonStateConfiguration configuration)
+        public void registerPerson(PersonRegistration registration)
         {
+            var personName = registration.personName;
+            var configuration = registration.configuration;
             if (string.IsNullOrWhiteSpace(personName)) throw new ArgumentNullException("personName");
+            if (registration.devicesDetails == null || registration.devicesDetails.Count() == 0) throw new ArgumentException("No devices found for person");
+            bool devicesRegistered = false;
+            foreach (var deviceDetails in registration.devicesDetails)
+            {
+                var identifier = devicePresenceFactory.Create(deviceDetails);
+                if (identifier != null)
+                {
+                    if (devicesState.ContainsKey(deviceDetails)) throw new ArgumentException("Device already exists", deviceDetails.DeviceName);
+                    devicesState.TryAdd(deviceDetails, personName);
+                    identifier.RegisterDevice(deviceDetails);
+                    identifier.OnDeviceIdentified += OnDeviceIdentified;
+                    devicesRegistered = true;
+                }
+            }
+            if (!devicesRegistered) throw new ArgumentException("No device identifiers found");
+
             var state = new PersonState(personName, configuration);
 
-            peopleState.AddOrUpdate(personName, state, (k,v) => state);
-        }
+            peopleState.AddOrUpdate(personName, state, (k, v) => state);
 
-        public void registerPerson(string personName)
-        {
-            registerPerson(personName, DEFAULT_CONFIGURATION);
         }
     }
 }

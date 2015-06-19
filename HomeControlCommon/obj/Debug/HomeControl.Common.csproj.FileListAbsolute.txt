@@ -1,0 +1,5 @@
+E:\Dev\HomeControl\HomeControlCommon\bin\Debug\HomeControl.Common.dll
+E:\Dev\HomeControl\HomeControlCommon\bin\Debug\HomeControl.Common.pdb
+E:\Dev\HomeControl\HomeControlCommon\obj\Debug\HomeControl.Common.csprojResolveAssemblyReference.cache
+E:\Dev\HomeControl\HomeControlCommon\obj\Debug\HomeControl.Common.dll
+E:\Dev\HomeControl\HomeControlCommon\obj\Debug\HomeControl.Common.pdb

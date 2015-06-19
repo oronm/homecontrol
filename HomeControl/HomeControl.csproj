@@ -40,6 +40,12 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Castle.Core">
+      <HintPath>..\packages\Castle.Core.3.3.3\lib\net45\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Windsor">
+      <HintPath>..\packages\Castle.Windsor.3.3.0\lib\net45\Castle.Windsor.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -50,9 +56,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HomeController.cs" />
+    <Compile Include="IDevicePresenceFactory.cs" />
     <Compile Include="IHomeController.cs" />
+    <Compile Include="Installer\Installer.cs" />
     <Compile Include="IPresnceIDentifier.cs" />
     <Compile Include="PersonIdentifier.cs" />
+    <Compile Include="PersonRegistration.cs" />
     <Compile Include="PersonState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -61,6 +70,17 @@
       <Project>{73c414da-6f7a-4c1a-b393-6b37d172b394}</Project>
       <Name>Helpers</Name>
     </ProjectReference>
+    <ProjectReference Include="..\HomeControlCommon\HomeControl.Common.csproj">
+      <Project>{8c0c56cb-9eb5-40ef-8f6e-78f5c3da5c3d}</Project>
+      <Name>HomeControl.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WifiPersonIdentifier\WifiDeviceIdentifier.csproj">
+      <Project>{341a4483-d21b-474c-92b9-8f02c2b53c3c}</Project>
+      <Name>WifiDeviceIdentifier</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
