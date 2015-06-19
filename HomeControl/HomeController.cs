@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Helpers;
 
-namespace BluetoothWatcherService
+namespace HomeControl
 {
-    public class HomeController : BluetoothListenerService.IHomeController
+    public class HomeController : IHomeController
     {
         private IDictionary<string, PersonState> state = null;
 

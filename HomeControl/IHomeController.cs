@@ -1,5 +1,5 @@
 ﻿using System;
-namespace BluetoothListenerService
+namespace HomeControl
 {
     public interface IHomeController
     {
