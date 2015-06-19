@@ -32,7 +32,7 @@ namespace HomeControl.Common
 
         protected void InitiateOnDeviceIdentied(IEnumerable<IDeviceDetails> devices)
         {
-            Task.Run(() => {
+            new Task(() => {
                 var evt = OnDeviceIdentified;
                 if (evt != null && devices != null && devices.Count() > 0)
                 {
@@ -49,7 +49,8 @@ namespace HomeControl.Common
                         }
                     }
                 }
-            });
+            }, TaskCreationOptions.LongRunning).Start();
+
         }
         protected abstract IEnumerable<IDeviceDetails> IdentifyDevicesPresence();
 
@@ -66,14 +67,15 @@ namespace HomeControl.Common
         private void StartTimer()
         {
             if (identificationTask != null) { identificationTask.Dispose(); identificationTask = null; }
-            identificationTask = Task.Run(() =>
+            identificationTask = new Task(() =>
             {
                 while (true)
                 {
                     InitiateOnDeviceIdentied(IdentifyDevicesPresence());
                     Thread.Sleep(1000 * 15);
                 }
-            });
+            }, TaskCreationOptions.LongRunning);
+            identificationTask.Start();
 
         }
     }
