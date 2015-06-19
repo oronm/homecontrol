@@ -61,7 +61,7 @@ namespace HomeControlService
                     indicatorIndex = array.IndexOf(indicator);
                     if (indicatorIndex > 0)
                     {
-                        array = array.Substring(0, array.Length - indicator.Length);
+                        array = array.Substring(1, indicatorIndex-indicator.Length);
                     }
                 }
             }
