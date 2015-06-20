@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,6 +15,8 @@ namespace HomeControl
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private IDictionary<string, PersonState> state = null;
         private IPresnceIdentifier identifier;
+        private ConcurrentQueue<Action> presenceActions = new ConcurrentQueue<Action>();
+
 
         public HomeController(IPresnceIdentifier identifier)
         {
@@ -23,34 +26,43 @@ namespace HomeControl
 
             identifier.registerPerson(new PersonRegistration()
             {
-                personName = "Oron",
-                devicesDetails = new IDeviceDetails[] { 
-                    new WifiDeviceDetails() { DeviceId = "D4-F4-6F-23-93-09", DeviceName = "Oron's iPhone" } 
-                }
-            });
-            identifier.registerPerson(new PersonRegistration()
-            {
                 personName = "Galia",
                 devicesDetails = new IDeviceDetails[] { 
                     new WifiDeviceDetails() { DeviceId = "70-3E-AC-4C-AC-54", DeviceName = "Galia's iPhone" } 
                 }
             });
+            identifier.registerPerson(new PersonRegistration()
+            {
+                personName = "Oron",
+                devicesDetails = new IDeviceDetails[] { 
+                    new WifiDeviceDetails() { DeviceId = "D4-F4-6F-23-93-09", DeviceName = "Oron's iPhone" } 
+                }
+            });
+
 
             state = identifier.getState();
+            Helper.StartRepetativeTask(HandleNewEvents, TimeSpan.FromSeconds(10));
+        }
+
+        private void HandleNewEvents()
+        {
+            Action eventAction;
+            while (presenceActions.TryDequeue(out eventAction))
+            {
+                eventAction();
+            }
         }
 
         void identifier_PersonLeft(object sender, string e)
         {
-            this.state = (sender as IPresnceIdentifier).getState();
-            if (e == "Oron") NotifyOronLeftHome();
-            else if (e == "Galia") NotifyGaliaLeftHome();
+            if (e == "Oron") presenceActions.Enqueue(NotifyOronLeftHome);
+            else if (e == "Galia") presenceActions.Enqueue(NotifyGaliaLeftHome);
         }
 
         void identifier_PersonArrived(object sender, string e)
         {
-            this.state = (sender as IPresnceIdentifier).getState();
-            if (e == "Oron") NotifyOronArrivedHome();
-            else if (e == "Galia") NotifyGaliaArrivedHome();
+            if (e == "Oron") presenceActions.Enqueue(NotifyOronArrivedHome);
+            else if (e == "Galia") presenceActions.Enqueue(NotifyGaliaArrivedHome);
         }
 
         public void NotifyOronArrivedHome()
@@ -68,7 +80,8 @@ namespace HomeControl
         {
             log.Info("galia is home!");
             PersonState oronState;
-            if (state.TryGetValue("Oron", out oronState) && !oronState.IsPresent())
+            bool oronInState = state.TryGetValue("Oron", out oronState);
+            if ( !oronInState || !oronState.IsPresent())
             {
                 Helper.StartProcess(@"E:\Programs\GaliaIsHome.bat");
             }

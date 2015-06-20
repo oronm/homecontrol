@@ -1,0 +1,8 @@
+E:\Dev\HomeControl\HomeControlService\bin\DeployService\HomeControlService.exe.config
+E:\Dev\deploy\HomeControlService\HomeControlService.exe.config
+E:\Dev\deploy\HomeControlService\log4net.config
+E:\Dev\deploy\HomeControlService\HomeControlService.exe
+E:\Dev\deploy\HomeControlService\HomeControlService.pdb
+E:\Dev\HomeControl\HomeControlService\obj\DeployService\HomeControlService.csprojResolveAssemblyReference.cache
+E:\Dev\HomeControl\HomeControlService\obj\DeployService\HomeControlService.exe
+E:\Dev\HomeControl\HomeControlService\obj\DeployService\HomeControlService.pdb

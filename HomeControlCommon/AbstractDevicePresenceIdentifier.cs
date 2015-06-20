@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Helpers;
 using log4net;
 
 namespace HomeControl.Common
@@ -23,7 +24,7 @@ namespace HomeControl.Common
             throwIfDeviceDeatilsInvalid(deviceDetails);
             return registeredDevices.TryRemove(deviceDetails.DeviceId, out removedDeviceDetails);
         }
-        
+
         private static void throwIfDeviceDeatilsInvalid(IDeviceDetails deviceDetails)
         {
             if (deviceDetails == null) throw new ArgumentNullException("deviceDetails");
@@ -34,7 +35,8 @@ namespace HomeControl.Common
 
         protected void InitiateOnDeviceIdentied(IEnumerable<IDeviceDetails> devices)
         {
-            new Task(() => {
+            new Task(() =>
+            {
                 var evt = OnDeviceIdentified;
                 if (evt != null && devices != null && devices.Count() > 0)
                 {
@@ -66,22 +68,17 @@ namespace HomeControl.Common
             StartTimer();
         }
 
-        private Task identificationTask;
+        private CancellationTokenSource cancellationTokenSource;
         private void StartTimer()
         {
             log.Info("Started device presence identification timer");
-            if (identificationTask != null) { identificationTask.Dispose(); identificationTask = null; }
-            identificationTask = new Task(() =>
-            {
-                while (true)
+            if (cancellationTokenSource != null) { cancellationTokenSource.Cancel(); cancellationTokenSource = null; }
+            cancellationTokenSource = Helper.StartRepetativeTask(() =>
                 {
                     log.Info("Identiying deivces presence");
                     InitiateOnDeviceIdentied(IdentifyDevicesPresence());
-                    Thread.Sleep(1000 * 15);
-                }
-            }, TaskCreationOptions.LongRunning);
-            identificationTask.Start();
 
+                }, TimeSpan.FromSeconds(60));
         }
     }
 }

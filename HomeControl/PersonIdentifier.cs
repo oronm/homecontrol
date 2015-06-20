@@ -12,8 +12,8 @@ namespace HomeControl
 {
     public class PersonStateConfiguration
     {
-        public TimeSpan MaximumAllowedDisconnection = TimeSpan.FromSeconds(20);
-        //public TimeSpan MaximumAllowedDisconnection = TimeSpan.FromMinutes(5);
+        //public TimeSpan MaximumAllowedDisconnection = TimeSpan.FromSeconds(20);
+        public TimeSpan MaximumAllowedDisconnection = TimeSpan.FromMinutes(5);
         private CancellationTokenSource presenceTimeoutCancellation;
 
         public CancellationTokenSource resetTimeoutCancellation()

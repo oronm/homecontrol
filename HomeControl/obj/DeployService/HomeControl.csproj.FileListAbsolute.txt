@@ -1,0 +1,16 @@
+E:\Dev\HomeControl\HomeControl\bin\DeployService\HomeControl.dll
+E:\Dev\HomeControl\HomeControl\bin\DeployService\HomeControl.pdb
+E:\Dev\HomeControl\HomeControl\bin\DeployService\Castle.Core.dll
+E:\Dev\HomeControl\HomeControl\bin\DeployService\Castle.Windsor.dll
+E:\Dev\HomeControl\HomeControl\bin\DeployService\Helpers.dll
+E:\Dev\HomeControl\HomeControl\bin\DeployService\HomeControl.Common.dll
+E:\Dev\HomeControl\HomeControl\bin\DeployService\log4net.dll
+E:\Dev\HomeControl\HomeControl\bin\DeployService\WifiDeviceIdentifier.dll
+E:\Dev\HomeControl\HomeControl\bin\DeployService\Helpers.pdb
+E:\Dev\HomeControl\HomeControl\bin\DeployService\WifiDeviceIdentifier.pdb
+E:\Dev\HomeControl\HomeControl\bin\DeployService\Castle.Core.xml
+E:\Dev\HomeControl\HomeControl\bin\DeployService\Castle.Windsor.xml
+E:\Dev\HomeControl\HomeControl\bin\DeployService\log4net.xml
+E:\Dev\HomeControl\HomeControl\obj\DeployService\HomeControl.csprojResolveAssemblyReference.cache
+E:\Dev\HomeControl\HomeControl\obj\DeployService\HomeControl.dll
+E:\Dev\HomeControl\HomeControl\obj\DeployService\HomeControl.pdb
