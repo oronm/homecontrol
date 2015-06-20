@@ -12,8 +12,8 @@ namespace HomeControl
 {
     public class PersonStateConfiguration
     {
-        //public TimeSpan MaximumAllowedDisconnection = TimeSpan.FromSeconds(15);
-        public TimeSpan MaximumAllowedDisconnection = TimeSpan.FromMinutes(5);
+        public TimeSpan MaximumAllowedDisconnection = TimeSpan.FromSeconds(20);
+        //public TimeSpan MaximumAllowedDisconnection = TimeSpan.FromMinutes(5);
         private CancellationTokenSource presenceTimeoutCancellation;
 
         public CancellationTokenSource resetTimeoutCancellation()
@@ -125,7 +125,7 @@ namespace HomeControl
             }
             if (!devicesRegistered) throw new ArgumentException("No device identifiers found");
 
-            var state = new PersonState(personName, configuration);
+            var state = new PersonState(personName, configuration ?? DEFAULT_CONFIGURATION);
 
             peopleState.AddOrUpdate(personName, state, (k, v) => state);
 

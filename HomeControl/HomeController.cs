@@ -5,11 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Helpers;
 using HomeControl.Common;
+using log4net;
 
 namespace HomeControl
 {
     public class HomeController : IHomeController
     {
+        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private IDictionary<string, PersonState> state = null;
         private IPresnceIdentifier identifier;
 
@@ -21,8 +23,17 @@ namespace HomeControl
 
             identifier.registerPerson(new PersonRegistration()
             {
-                personName = "oron",
-                devicesDetails = new IDeviceDetails[] { new WifiDeviceDetails() { DeviceId = "D4-F4-6F-23-93-09", DeviceName = "Oron's iPhone" } }
+                personName = "Oron",
+                devicesDetails = new IDeviceDetails[] { 
+                    new WifiDeviceDetails() { DeviceId = "D4-F4-6F-23-93-09", DeviceName = "Oron's iPhone" } 
+                }
+            });
+            identifier.registerPerson(new PersonRegistration()
+            {
+                personName = "Galia",
+                devicesDetails = new IDeviceDetails[] { 
+                    new WifiDeviceDetails() { DeviceId = "70-3E-AC-4C-AC-54", DeviceName = "Galia's iPhone" } 
+                }
             });
 
             state = identifier.getState();
@@ -31,40 +42,40 @@ namespace HomeControl
         void identifier_PersonLeft(object sender, string e)
         {
             this.state = (sender as IPresnceIdentifier).getState();
-            if (e == "oron") NotifyOronLeftHome();
-            else if (e == "galia") NotifyGaliaLeftHome();
+            if (e == "Oron") NotifyOronLeftHome();
+            else if (e == "Galia") NotifyGaliaLeftHome();
         }
 
         void identifier_PersonArrived(object sender, string e)
         {
             this.state = (sender as IPresnceIdentifier).getState();
-            if (e == "oron") NotifyOronArrivedHome();
-            else if (e == "galia") NotifyGaliaArrivedHome();
+            if (e == "Oron") NotifyOronArrivedHome();
+            else if (e == "Galia") NotifyGaliaArrivedHome();
         }
 
         public void NotifyOronArrivedHome()
         {
-            Console.WriteLine("Oron is Home!");
+            log.Info("Oron is Home!");
             Helper.StartProcess(@"E:\Programs\OronIsHome.bat");
         }
         public void NotifyOronLeftHome()
         {
             Helper.StartProcess(@"E:\Programs\OronIsNotHome.bat");
-            Console.WriteLine("oron left home!");
+            log.Info("oron left home!");
 
         }
         public void NotifyGaliaArrivedHome()
         {
-            Console.WriteLine("galia is home!");
+            log.Info("galia is home!");
             PersonState oronState;
-            if (state.TryGetValue("oron", out oronState) && !oronState.IsPresent())
+            if (state.TryGetValue("Oron", out oronState) && !oronState.IsPresent())
             {
                 Helper.StartProcess(@"E:\Programs\GaliaIsHome.bat");
             }
         }
         public void NotifyGaliaLeftHome()
         {
-            Console.WriteLine("Galia left home!");
+            log.Info("Galia left home!");
             Helper.StartProcess(@"E:\Programs\GaliaIsNotHome.bat");
         }
     }

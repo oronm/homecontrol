@@ -1,11 +1,13 @@
 E:\Dev\HomeControl\WifiPersonIdentifier\bin\Debug\WifiDeviceIdentifier.dll
 E:\Dev\HomeControl\WifiPersonIdentifier\bin\Debug\WifiDeviceIdentifier.pdb
-E:\Dev\HomeControl\WifiPersonIdentifier\obj\Debug\WifiDeviceIdentifier.dll
-E:\Dev\HomeControl\WifiPersonIdentifier\obj\Debug\WifiDeviceIdentifier.pdb
 E:\Dev\HomeControl\WifiPersonIdentifier\bin\Debug\Castle.Core.dll
 E:\Dev\HomeControl\WifiPersonIdentifier\bin\Debug\Castle.Windsor.dll
 E:\Dev\HomeControl\WifiPersonIdentifier\bin\Debug\HomeControl.Common.dll
+E:\Dev\HomeControl\WifiPersonIdentifier\bin\Debug\log4net.dll
 E:\Dev\HomeControl\WifiPersonIdentifier\bin\Debug\HomeControl.Common.pdb
 E:\Dev\HomeControl\WifiPersonIdentifier\bin\Debug\Castle.Core.xml
 E:\Dev\HomeControl\WifiPersonIdentifier\bin\Debug\Castle.Windsor.xml
+E:\Dev\HomeControl\WifiPersonIdentifier\bin\Debug\log4net.xml
 E:\Dev\HomeControl\WifiPersonIdentifier\obj\Debug\WifiDeviceIdentifier.csprojResolveAssemblyReference.cache
+E:\Dev\HomeControl\WifiPersonIdentifier\obj\Debug\WifiDeviceIdentifier.dll
+E:\Dev\HomeControl\WifiPersonIdentifier\obj\Debug\WifiDeviceIdentifier.pdb

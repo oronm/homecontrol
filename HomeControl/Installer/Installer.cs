@@ -17,7 +17,9 @@ namespace HomeControl.Installer
         public void Install(IWindsorContainer container, IConfigurationStore store)
         {
             container.Register(
-                Component.For<IDevicePresenceIdentifier>().ImplementedBy<WifiDevicePresenceIdentifier>().Named(typeof(WifiDevicePresenceIdentifier).Name).LifeStyle.Singleton
+                Component.For<WifiDevicePresenceIdentifier>().LifeStyle.Singleton,
+                Component.For<IPresnceIdentifier>().ImplementedBy<PresenceIdentifier>(),
+                Component.For<IDevicePresenceFactory>().ImplementedBy<DevicePresenceFactory>().LifestyleSingleton()
                 );
         }
     }

@@ -15,14 +15,19 @@ namespace HomeControl.Common
 
     public class DevicePresenceFactory : IDevicePresenceFactory
     {
-        private IDictionary<Type, IDevicePresenceIdentifier> creators = 
-            new Dictionary<Type, IDevicePresenceIdentifier>() {
-            { typeof(WifiDeviceDetails), new  WifiDevicePresenceIdentifier() }
-        };
+        private IDictionary<Type, IDevicePresenceIdentifier> creators;
+
+        public DevicePresenceFactory(WifiDevicePresenceIdentifier wifiDeviceIdentifier)
+        {
+            creators = new Dictionary<Type, IDevicePresenceIdentifier>() {
+                { typeof(WifiDeviceDetails), wifiDeviceIdentifier }
+            };
+        }
 
         public IDevicePresenceIdentifier Create<T>(T deviceDetails) where T : IDeviceDetails
         {
-            if (creators.ContainsKey(typeof(T))) return creators[typeof(T)];
+            var detailsType = deviceDetails.GetType();
+            if (creators.ContainsKey(detailsType)) return creators[detailsType];
             else return null;
         }
     }

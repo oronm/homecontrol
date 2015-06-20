@@ -1,5 +1,10 @@
 E:\Dev\HomeControl\HomeControlCommon\bin\Debug\HomeControl.Common.dll
 E:\Dev\HomeControl\HomeControlCommon\bin\Debug\HomeControl.Common.pdb
-E:\Dev\HomeControl\HomeControlCommon\obj\Debug\HomeControl.Common.csprojResolveAssemblyReference.cache
+E:\Dev\HomeControl\HomeControlCommon\bin\Debug\Castle.Core.dll
+E:\Dev\HomeControl\HomeControlCommon\bin\Debug\Castle.Windsor.dll
+E:\Dev\HomeControl\HomeControlCommon\bin\Debug\log4net.dll
+E:\Dev\HomeControl\HomeControlCommon\bin\Debug\Castle.Core.xml
+E:\Dev\HomeControl\HomeControlCommon\bin\Debug\Castle.Windsor.xml
+E:\Dev\HomeControl\HomeControlCommon\bin\Debug\log4net.xml
 E:\Dev\HomeControl\HomeControlCommon\obj\Debug\HomeControl.Common.dll
 E:\Dev\HomeControl\HomeControlCommon\obj\Debug\HomeControl.Common.pdb

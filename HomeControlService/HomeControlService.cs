@@ -5,28 +5,28 @@ using System.Text;
 using System.Threading.Tasks;
 using Castle.Core.Logging;
 using HomeControl;
+using log4net;
 
 namespace HomeControlService
 {
     public class HomeControlService
     {
-        private ILogger logger;
+        private readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private IHomeController homeController;
 
-        public HomeControlService(ILogger logger, IHomeController homeController)
+        public HomeControlService(IHomeController homeController)
         {
-            this.logger = logger;
             this.homeController = homeController;
         }
 
         internal void Start()
         {
-            logger.Info("Starting");
+            log.Info("Starting");
         }
 
         internal bool Stop()
         {
-            logger.Info("Stopping");
+            log.Info("Stopping");
             return true;
         }
     }

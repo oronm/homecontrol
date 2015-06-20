@@ -5,11 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using log4net;
 
 namespace HomeControl.Common
 {
     public abstract class AbstractDevicePresenceIdentifier : IDevicePresenceIdentifier
     {
+        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         protected ConcurrentDictionary<string, IDeviceDetails> registeredDevices = new ConcurrentDictionary<string, IDeviceDetails>();
         public IDeviceDetails RegisterDevice(IDeviceDetails deviceDetails)
         {
@@ -41,11 +43,11 @@ namespace HomeControl.Common
                     {
                         try
                         {
-                            OnDeviceIdentified(this, new DeviceIdentifiedEventArgs() { deviceDeatils = identifiedDevice, presenceUtcTime = now });
+                            evt(this, new DeviceIdentifiedEventArgs() { deviceDeatils = identifiedDevice, presenceUtcTime = now });
                         }
-                        catch
+                        catch (Exception e)
                         {
-
+                            log.Error(string.Format("Error rasising OnDeviceIdentified for device {0}:{1}", identifiedDevice.DeviceId, identifiedDevice.DeviceName), e);
                         }
                     }
                 }
@@ -58,7 +60,8 @@ namespace HomeControl.Common
 
     public abstract class AbstractTimedDevicePresenceIDentifier : AbstractDevicePresenceIdentifier
     {
-        public AbstractTimedDevicePresenceIDentifier ()
+        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        public AbstractTimedDevicePresenceIDentifier()
         {
             StartTimer();
         }
@@ -66,11 +69,13 @@ namespace HomeControl.Common
         private Task identificationTask;
         private void StartTimer()
         {
+            log.Info("Started device presence identification timer");
             if (identificationTask != null) { identificationTask.Dispose(); identificationTask = null; }
             identificationTask = new Task(() =>
             {
                 while (true)
                 {
+                    log.Info("Identiying deivces presence");
                     InitiateOnDeviceIdentied(IdentifyDevicesPresence());
                     Thread.Sleep(1000 * 15);
                 }
