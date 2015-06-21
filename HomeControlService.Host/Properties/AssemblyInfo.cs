@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
+[assembly: log4net.Config.XmlConfigurator(ConfigFile = "Log4Net.config", Watch = true)]
 [assembly: AssemblyTitle("HomeControlService")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
@@ -20,7 +21,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("4edd077c-629c-4dd9-a3a0-2b71c1a328d2")]
+[assembly: Guid("a62fe170-b438-431c-99a8-7f90c4034f48")]
 
 // Version information for an assembly consists of the following four values:
 //

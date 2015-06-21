@@ -14,7 +14,7 @@ using log4net;
 using Topshelf;
 using Topshelf.ServiceConfigurators;
 
-namespace HomeControlService
+namespace HomeControlService.Host
 {
     class Program
     {

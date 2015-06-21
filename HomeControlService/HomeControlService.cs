@@ -19,12 +19,12 @@ namespace HomeControlService
             this.homeController = homeController;
         }
 
-        internal void Start()
+        public void Start()
         {
             log.Info("Starting");
         }
 
-        internal bool Stop()
+        public bool Stop()
         {
             log.Info("Stopping");
             return true;
