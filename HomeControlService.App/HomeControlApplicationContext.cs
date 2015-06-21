@@ -13,10 +13,14 @@ namespace HomeControlService.App
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
         private HomeControlService tc;
+
+        private const int BaloonTooltipTimeoutMS = 2000;
     
         public HomeControlApplicationContext(HomeControlService tc)
         {
             this.tc = tc;
+            tc.OnPersonArrived += tc_OnPersonArrived;
+            tc.OnPersonLeft += tc_OnPersonLeft;
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -45,7 +49,26 @@ namespace HomeControlService.App
             this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
 
             tc.Start();
-            
+        }
+
+        private void ShowTip(string title, string tip = null)
+        {
+            notifyIcon1.ShowBalloonTip(BaloonTooltipTimeoutMS, tip, tip ?? title, ToolTipIcon.Info);
+        }
+        private void ShowTip(PersonPresenceChangedEventArgs e, bool arrived)
+        {
+            string action = arrived ? "Arrived" : "Left";
+            ShowTip(string.Format("{0} has {1} at {2}", e.Name, action, e.ChangeTimeUtc.ToLocalTime().ToShortTimeString()));
+        }
+
+        void tc_OnPersonLeft(object sender, PersonPresenceChangedEventArgs e)
+        {
+            ShowTip(e, false);
+        }
+
+        void tc_OnPersonArrived(object sender, PersonPresenceChangedEventArgs e)
+        {
+            ShowTip(e, true);
         }
 
         private void toolStripMenuItem1_Click(object sender, EventArgs e)

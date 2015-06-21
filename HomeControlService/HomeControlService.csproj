@@ -53,6 +53,7 @@
   <ItemGroup>
     <Compile Include="HomeControlService.cs" />
     <Compile Include="Installer.cs" />
+    <Compile Include="PersonPresenceChangedEventArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

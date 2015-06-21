@@ -18,6 +18,10 @@ namespace HomeControl
         private ConcurrentQueue<Action> presenceActions = new ConcurrentQueue<Action>();
 
 
+        public event EventHandler<PersonPresenceChangedEventArgs> OnPersonArrived;
+        public event EventHandler<PersonPresenceChangedEventArgs> OnPersonLeft; 
+    
+
         public HomeController(IPresnceIdentifier identifier)
         {
             this.identifier = identifier;
@@ -53,30 +57,49 @@ namespace HomeControl
             }
         }
 
-        void identifier_PersonLeft(object sender, string e)
+        private void identifier_PersonLeft(object sender, string e)
         {
             if (e == "Oron") presenceActions.Enqueue(NotifyOronLeftHome);
             else if (e == "Galia") presenceActions.Enqueue(NotifyGaliaLeftHome);
         }
 
-        void identifier_PersonArrived(object sender, string e)
+        private void identifier_PersonArrived(object sender, string e)
         {
             if (e == "Oron") presenceActions.Enqueue(NotifyOronArrivedHome);
             else if (e == "Galia") presenceActions.Enqueue(NotifyGaliaArrivedHome);
         }
 
-        public void NotifyOronArrivedHome()
+        private void NotifyOronArrivedHome()
         {
             log.Info("Oron is Home!");
             Helper.StartProcess(@"E:\Programs\OronIsHome.bat");
+            NotifyPersonArrived("Oron");
         }
-        public void NotifyOronLeftHome()
+
+        private void NotifyPersonArrived(string p)
+        {
+            Notify(this.OnPersonArrived, p);
+        }
+
+        private void NotifyPersonLeft(string p)
+        {
+            Notify(this.OnPersonLeft, p);
+        }
+        
+        private void Notify(EventHandler<PersonPresenceChangedEventArgs> eventHandler, string p)
+        {
+            var tmp = eventHandler;
+            if (tmp != null) tmp(this, new PersonPresenceChangedEventArgs() { Name = p, ChangeTimeUtc = DateTime.UtcNow });
+        }
+        
+        private void NotifyOronLeftHome()
         {
             Helper.StartProcess(@"E:\Programs\OronIsNotHome.bat");
             log.Info("oron left home!");
-
+            NotifyPersonLeft("Oron");
         }
-        public void NotifyGaliaArrivedHome()
+
+        private void NotifyGaliaArrivedHome()
         {
             log.Info("galia is home!");
             PersonState oronState;
@@ -85,11 +108,13 @@ namespace HomeControl
             {
                 Helper.StartProcess(@"E:\Programs\GaliaIsHome.bat");
             }
+            NotifyPersonArrived("Galia");
         }
-        public void NotifyGaliaLeftHome()
+        private void NotifyGaliaLeftHome()
         {
             log.Info("Galia left home!");
             Helper.StartProcess(@"E:\Programs\GaliaIsNotHome.bat");
+            NotifyPersonLeft("Galia");
         }
     }
 }
