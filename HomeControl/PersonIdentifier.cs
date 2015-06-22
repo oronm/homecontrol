@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using HomeControl.Common;
 using Castle.Facilities.TypedFactory;
+using log4net;
 
 namespace HomeControl
 {
@@ -24,13 +25,14 @@ namespace HomeControl
         }
         public void cancelPresenceTimeout()
         {
-            if (presenceTimeoutCancellation != null) presenceTimeoutCancellation.Cancel(false);
+            if (presenceTimeoutCancellation != null) presenceTimeoutCancellation.Cancel(true);
         }
     }
 
 
     public class PresenceIdentifier : IPresnceIdentifier
     {
+        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private ConcurrentDictionary<string, PersonState> peopleState = new ConcurrentDictionary<string, PersonState>();
         private ConcurrentDictionary<IDeviceDetails, string> devicesState = new ConcurrentDictionary<IDeviceDetails, string>();
         private PersonStateConfiguration DEFAULT_CONFIGURATION { get { return new PersonStateConfiguration(); } }
@@ -77,6 +79,7 @@ namespace HomeControl
                     await Task.Delay(
                         person.configuration.MaximumAllowedDisconnection,
                         person.configuration.resetTimeoutCancellation().Token);
+                    log.WarnFormat("Prensce timeout wasnt cancelled for {0}-{1}, starting handlepersonleft", person.name, person.lastSeen.ToShortDateString()+person.lastSeen.ToShortTimeString());
                     HandlePersonLeft(person.name);
                 }
                 catch (Exception e)
