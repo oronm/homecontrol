@@ -13,6 +13,7 @@ namespace HomeControl
 {
     public class PersonStateConfiguration
     {
+        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         //public TimeSpan MaximumAllowedDisconnection = TimeSpan.FromSeconds(20);
         public TimeSpan MaximumAllowedDisconnection = TimeSpan.FromMinutes(5);
         private CancellationTokenSource presenceTimeoutCancellation;
@@ -25,7 +26,15 @@ namespace HomeControl
         }
         public void cancelPresenceTimeout()
         {
-            if (presenceTimeoutCancellation != null) presenceTimeoutCancellation.Cancel(true);
+            try
+            {
+                if (presenceTimeoutCancellation != null) presenceTimeoutCancellation.Cancel(true);
+                else log.Warn("CancelPresenceTimeout on null source");
+            }
+            catch (Exception e)
+            {
+                log.Error("Error cancelling presence timeout", e);
+            }
         }
     }
 
@@ -57,36 +66,65 @@ namespace HomeControl
 
         public void DeviceConnected(string personName)
         {
-            DateTime connectionTime = DateTime.UtcNow;
-            if (string.IsNullOrWhiteSpace(personName)) return;
-            if (!peopleState.ContainsKey(personName)) return;
-
-            PersonState person = peopleState[personName];
-
-            bool isPresent = person.IsPresent();
-            person.lastSeen = connectionTime;
-            person.configuration.cancelPresenceTimeout();
-
-            if (!isPresent)
+            try
             {
-                Task.Run(() => HandlePersonArrived(person.name));
+                DateTime connectionTime = DateTime.UtcNow;
+                if (string.IsNullOrWhiteSpace(personName)) { log.Warn("DeviceConnected for empty personname"); return; }
+                if (!peopleState.ContainsKey(personName)) { log.WarnFormat("DeviceConnected for unregistered personname {0}", personName); return; }
+
+                PersonState person = peopleState[personName];
+
+                bool isPresent = person.IsPresent();
+                person.lastSeen = connectionTime;
+                person.configuration.cancelPresenceTimeout();
+
+                if (!isPresent)
+                {
+                    Task.Run(() => HandlePersonArrived(person.name));
+                }
+
+                var presenceCancellationTask = Task.Run(async delegate
+                {
+                    try
+                    {
+                        var cancellation = person.configuration.resetTimeoutCancellation();
+                        if (cancellation.IsCancellationRequested || cancellation.Token.IsCancellationRequested)
+                            log.WarnFormat("Presence timeout is entering with a cancelled token for {0} source={1} token={2}", person.name, cancellation.IsCancellationRequested, cancellation.Token.IsCancellationRequested);
+                        
+                        await Task.Delay(
+                            person.configuration.MaximumAllowedDisconnection,
+                            cancellation.Token);
+
+                        log.WarnFormat("Presensce timeout wasnt cancelled for {0}-{1}, source={2} token={3}", person.name, person.lastSeen.ToShortDateString() + " " + person.lastSeen.ToShortTimeString(), cancellation.IsCancellationRequested, cancellation.Token.IsCancellationRequested);
+
+                        if (!person.IsPresent()) HandlePersonLeft(person.name);
+                    }
+                    catch (AggregateException ae)
+                    {
+                        foreach (var ex in ae.InnerExceptions)
+                        {
+                            logAndThrowNonCancellationException(personName, ex);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        logAndThrowNonCancellationException(personName, e);
+                    }
+                });
             }
-
-            var presenceCancellationTask = Task.Run(async delegate
+            catch (Exception e)
             {
-                try
-                {
-                    await Task.Delay(
-                        person.configuration.MaximumAllowedDisconnection,
-                        person.configuration.resetTimeoutCancellation().Token);
-                    log.WarnFormat("Prensce timeout wasnt cancelled for {0}-{1}, starting handlepersonleft", person.name, person.lastSeen.ToShortDateString()+person.lastSeen.ToShortTimeString());
-                    HandlePersonLeft(person.name);
-                }
-                catch (Exception e)
-                {
+                log.Error(string.Format("General exception on DeviceConnected for {0}", personName ?? "null"), e);
+            }
+        }
 
-                }
-            });
+        private static void logAndThrowNonCancellationException(string personName, Exception e)
+        {
+            if (!(e is TaskCanceledException))
+            {
+                log.ErrorFormat(string.Format("Error is cancellation task for {0}", personName ?? "null"), e);
+                throw e;
+            }
         }
 
         private void HandlePersonLeft(string personName)
