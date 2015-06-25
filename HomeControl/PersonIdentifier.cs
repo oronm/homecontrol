@@ -8,13 +8,14 @@ using System.Threading.Tasks;
 using HomeControl.Common;
 using Castle.Facilities.TypedFactory;
 using log4net;
+using Helpers;
 
 namespace HomeControl
 {
     public class PersonStateConfiguration
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        //public TimeSpan MaximumAllowedDisconnection = TimeSpan.FromSeconds(20);
+        //public TimeSpan MaximumAllowedDisconnection = TimeSpan.FromSeconds(19);
         public TimeSpan MaximumAllowedDisconnection = TimeSpan.FromMinutes(5);
         private CancellationTokenSource presenceTimeoutCancellation;
 
@@ -45,6 +46,8 @@ namespace HomeControl
         private ConcurrentDictionary<string, PersonState> peopleState = new ConcurrentDictionary<string, PersonState>();
         private ConcurrentDictionary<IDeviceDetails, string> devicesState = new ConcurrentDictionary<IDeviceDetails, string>();
         private PersonStateConfiguration DEFAULT_CONFIGURATION { get { return new PersonStateConfiguration(); } }
+        //private readonly int PRESENCE_MONITOR_INTERVAL_MS = 10 * 1000;
+        private readonly int PRESENCE_MONITOR_INTERVAL_MS = 60 * 1000;
 
         public event EventHandler<string> PersonArrived;
         public event EventHandler<string> PersonLeft;
@@ -53,6 +56,31 @@ namespace HomeControl
         public PresenceIdentifier(IDevicePresenceFactory devicePresenceFactory)
         {
             this.devicePresenceFactory = devicePresenceFactory;
+            Helper.StartRepetativeTask(monitorPresence, TimeSpan.FromMilliseconds(PRESENCE_MONITOR_INTERVAL_MS));
+        }
+
+        private void monitorPresence()
+        {
+            var now = DateTime.UtcNow;
+            var peopleLeft = new List<string>();
+            foreach (var person in peopleState)
+            {
+                if (!person.Value.IsPresent() && person.Value.lastSeen > person.Value.lastLeft)
+                {
+                    person.Value.lastLeft = now;
+                    peopleLeft.Add(person.Value.name);
+                }
+            }
+
+            if (peopleLeft.Count > 0) Helper.StartTask(() => announcePeopleLeft(peopleLeft), TimeSpan.FromMilliseconds(PRESENCE_MONITOR_INTERVAL_MS));
+        }
+
+        private void announcePeopleLeft(List<string> peopleLeft)
+        {
+            foreach (var personName in peopleLeft)
+            {
+                HandlePersonLeft(personName);
+            }
         }
 
         public void OnDeviceIdentified(object sender, DeviceIdentifiedEventArgs args)
@@ -66,55 +94,18 @@ namespace HomeControl
 
         public void DeviceConnected(string personName)
         {
-            try
+            DateTime connectionTime = DateTime.UtcNow;
+            if (string.IsNullOrWhiteSpace(personName)) { log.Warn("DeviceConnected for empty personname"); return; }
+            if (!peopleState.ContainsKey(personName)) { log.WarnFormat("DeviceConnected for unregistered personname {0}", personName); return; }
+
+            PersonState person = peopleState[personName];
+
+            bool isPresent = person.IsPresent();
+            person.lastSeen = connectionTime;
+
+            if (!isPresent)
             {
-                DateTime connectionTime = DateTime.UtcNow;
-                if (string.IsNullOrWhiteSpace(personName)) { log.Warn("DeviceConnected for empty personname"); return; }
-                if (!peopleState.ContainsKey(personName)) { log.WarnFormat("DeviceConnected for unregistered personname {0}", personName); return; }
-
-                PersonState person = peopleState[personName];
-
-                bool isPresent = person.IsPresent();
-                person.lastSeen = connectionTime;
-                person.configuration.cancelPresenceTimeout();
-
-                if (!isPresent)
-                {
-                    Task.Run(() => HandlePersonArrived(person.name));
-                }
-
-                var presenceCancellationTask = Task.Run(async delegate
-                {
-                    try
-                    {
-                        var cancellation = person.configuration.resetTimeoutCancellation();
-                        if (cancellation.IsCancellationRequested || cancellation.Token.IsCancellationRequested)
-                            log.WarnFormat("Presence timeout is entering with a cancelled token for {0} source={1} token={2}", person.name, cancellation.IsCancellationRequested, cancellation.Token.IsCancellationRequested);
-                        
-                        await Task.Delay(
-                            person.configuration.MaximumAllowedDisconnection,
-                            cancellation.Token);
-
-                        log.WarnFormat("Presensce timeout wasnt cancelled for {0}-{1}, source={2} token={3}", person.name, person.lastSeen.ToShortDateString() + " " + person.lastSeen.ToShortTimeString(), cancellation.IsCancellationRequested, cancellation.Token.IsCancellationRequested);
-
-                        if (!person.IsPresent()) HandlePersonLeft(person.name);
-                    }
-                    catch (AggregateException ae)
-                    {
-                        foreach (var ex in ae.InnerExceptions)
-                        {
-                            logAndThrowNonCancellationException(personName, ex);
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        logAndThrowNonCancellationException(personName, e);
-                    }
-                });
-            }
-            catch (Exception e)
-            {
-                log.Error(string.Format("General exception on DeviceConnected for {0}", personName ?? "null"), e);
+                Task.Run(() => HandlePersonArrived(person.name));
             }
         }
 
@@ -129,14 +120,12 @@ namespace HomeControl
 
         private void HandlePersonLeft(string personName)
         {
-            var evt = PersonLeft;
-            if (evt != null) evt(this, personName);
+            Helper.RaiseSafely(this, PersonLeft, personName);
         }
 
         private void HandlePersonArrived(string personName)
         {
-            var evt = PersonArrived;
-            if (evt != null) evt(this, personName);
+            Helper.RaiseSafely(this, PersonArrived, personName);
         }
 
 
@@ -151,10 +140,11 @@ namespace HomeControl
             var configuration = registration.configuration;
             if (string.IsNullOrWhiteSpace(personName)) throw new ArgumentNullException("personName");
             if (registration.devicesDetails == null || registration.devicesDetails.Count() == 0) throw new ArgumentException("No devices found for person");
+            
             bool devicesRegistered = false;
             foreach (var deviceDetails in registration.devicesDetails)
             {
-                var identifier = devicePresenceFactory.Create(deviceDetails);
+                var identifier = devicePresenceFactory.GetOrCreate(deviceDetails);
                 if (identifier != null)
                 {
                     if (devicesState.ContainsKey(deviceDetails)) throw new ArgumentException("Device already exists", deviceDetails.DeviceName);

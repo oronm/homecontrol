@@ -10,7 +10,7 @@ namespace HomeControl.Common
 {
     public interface IDevicePresenceFactory
     {
-        IDevicePresenceIdentifier Create<T>(T deviceDetails) where T : IDeviceDetails;
+        IDevicePresenceIdentifier GetOrCreate<T>(T deviceDetails) where T : IDeviceDetails;
     }
 
     public class DevicePresenceFactory : IDevicePresenceFactory
@@ -24,7 +24,7 @@ namespace HomeControl.Common
             };
         }
 
-        public IDevicePresenceIdentifier Create<T>(T deviceDetails) where T : IDeviceDetails
+        public IDevicePresenceIdentifier GetOrCreate<T>(T deviceDetails) where T : IDeviceDetails
         {
             var detailsType = deviceDetails.GetType();
             if (creators.ContainsKey(detailsType)) return creators[detailsType];

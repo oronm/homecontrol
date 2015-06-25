@@ -11,6 +11,7 @@ namespace HomeControl
     {
         public string name;
         public DateTime lastSeen;
+        public DateTime lastLeft;
         public PersonStateConfiguration configuration;
 
         public PersonState(string name, PersonStateConfiguration configuration)
@@ -19,6 +20,7 @@ namespace HomeControl
             this.name = name;
             this.configuration = configuration;
             lastSeen = DateTime.MinValue;
+            lastLeft = DateTime.MinValue;
         }
         public bool IsPresent()
         {

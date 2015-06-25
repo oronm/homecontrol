@@ -31,13 +31,29 @@ namespace HomeControl.Common
             if (String.IsNullOrWhiteSpace(deviceDetails.DeviceId)) throw new ArgumentNullException("DeviceId");
         }
 
-        public event EventHandler<DeviceIdentifiedEventArgs> OnDeviceIdentified;
+        private event EventHandler<DeviceIdentifiedEventArgs> onDeviceIdentified;
+        public event EventHandler<DeviceIdentifiedEventArgs> OnDeviceIdentified
+        {
+            add
+            {
+                if (value == null) throw new ArgumentNullException();
+                if (this.onDeviceIdentified == null || !this.onDeviceIdentified.GetInvocationList().Contains(value))
+                {
+                    this.onDeviceIdentified += value;
+                }
+            }
+            remove
+            {
+                if (value == null) throw new ArgumentNullException();
+                this.onDeviceIdentified -= value;
+            }
+        }
 
         protected void InitiateOnDeviceIdentied(IEnumerable<IDeviceDetails> devices)
         {
             new Task(() =>
             {
-                var evt = OnDeviceIdentified;
+                var evt = onDeviceIdentified;
                 if (evt != null && devices != null && devices.Count() > 0)
                 {
                     var now = DateTime.UtcNow;
