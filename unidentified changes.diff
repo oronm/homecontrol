@@ -1,0 +1,499 @@
+diff --git a/.nuget/NuGet.Config b/.nuget/NuGet.Config
+new file mode 100644
+index 0000000..67f8ea0
+--- /dev/null
++++ b/.nuget/NuGet.Config
+@@ -0,0 +1,6 @@
++﻿<?xml version="1.0" encoding="utf-8"?>
++<configuration>
++  <solution>
++    <add key="disableSourceControlIntegration" value="true" />
++  </solution>
++</configuration>
+\ No newline at end of file
+diff --git a/.nuget/NuGet.targets b/.nuget/NuGet.targets
+new file mode 100644
+index 0000000..3f8c37b
+--- /dev/null
++++ b/.nuget/NuGet.targets
+@@ -0,0 +1,144 @@
++<?xml version="1.0" encoding="utf-8"?>
++<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
++    <PropertyGroup>
++        <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">$(MSBuildProjectDirectory)\..\</SolutionDir>
++
++        <!-- Enable the restore command to run before builds -->
++        <RestorePackages Condition="  '$(RestorePackages)' == '' ">false</RestorePackages>
++
++        <!-- Property that enables building a package from a project -->
++        <BuildPackage Condition=" '$(BuildPackage)' == '' ">false</BuildPackage>
++
++        <!-- Determines if package restore consent is required to restore packages -->
++        <RequireRestoreConsent Condition=" '$(RequireRestoreConsent)' != 'false' ">true</RequireRestoreConsent>
++
++        <!-- Download NuGet.exe if it does not already exist -->
++        <DownloadNuGetExe Condition=" '$(DownloadNuGetExe)' == '' ">false</DownloadNuGetExe>
++    </PropertyGroup>
++
++    <ItemGroup Condition=" '$(PackageSources)' == '' ">
++        <!-- Package sources used to restore packages. By default, registered sources under %APPDATA%\NuGet\NuGet.Config will be used -->
++        <!-- The official NuGet package source (https://www.nuget.org/api/v2/) will be excluded if package sources are specified and it does not appear in the list -->
++        <!--
++            <PackageSource Include="https://www.nuget.org/api/v2/" />
++            <PackageSource Include="https://my-nuget-source/nuget/" />
++        -->
++    </ItemGroup>
++
++    <PropertyGroup Condition=" '$(OS)' == 'Windows_NT'">
++        <!-- Windows specific commands -->
++        <NuGetToolsPath>$([System.IO.Path]::Combine($(SolutionDir), ".nuget"))</NuGetToolsPath>
++    </PropertyGroup>
++
++    <PropertyGroup Condition=" '$(OS)' != 'Windows_NT'">
++        <!-- We need to launch nuget.exe with the mono command if we're not on windows -->
++        <NuGetToolsPath>$(SolutionDir).nuget</NuGetToolsPath>
++    </PropertyGroup>
++
++    <PropertyGroup>
++        <PackagesProjectConfig Condition=" '$(OS)' == 'Windows_NT'">$(MSBuildProjectDirectory)\packages.$(MSBuildProjectName.Replace(' ', '_')).config</PackagesProjectConfig>
++        <PackagesProjectConfig Condition=" '$(OS)' != 'Windows_NT'">$(MSBuildProjectDirectory)\packages.$(MSBuildProjectName).config</PackagesProjectConfig>
++    </PropertyGroup>
++
++    <PropertyGroup>
++      <PackagesConfig Condition="Exists('$(MSBuildProjectDirectory)\packages.config')">$(MSBuildProjectDirectory)\packages.config</PackagesConfig>
++      <PackagesConfig Condition="Exists('$(PackagesProjectConfig)')">$(PackagesProjectConfig)</PackagesConfig>
++    </PropertyGroup>
++    
++    <PropertyGroup>
++        <!-- NuGet command -->
++        <NuGetExePath Condition=" '$(NuGetExePath)' == '' ">$(NuGetToolsPath)\NuGet.exe</NuGetExePath>
++        <PackageSources Condition=" $(PackageSources) == '' ">@(PackageSource)</PackageSources>
++
++        <NuGetCommand Condition=" '$(OS)' == 'Windows_NT'">"$(NuGetExePath)"</NuGetCommand>
++        <NuGetCommand Condition=" '$(OS)' != 'Windows_NT' ">mono --runtime=v4.0.30319 "$(NuGetExePath)"</NuGetCommand>
++
++        <PackageOutputDir Condition="$(PackageOutputDir) == ''">$(TargetDir.Trim('\\'))</PackageOutputDir>
++
++        <RequireConsentSwitch Condition=" $(RequireRestoreConsent) == 'true' ">-RequireConsent</RequireConsentSwitch>
++        <NonInteractiveSwitch Condition=" '$(VisualStudioVersion)' != '' AND '$(OS)' == 'Windows_NT' ">-NonInteractive</NonInteractiveSwitch>
++
++        <PaddedSolutionDir Condition=" '$(OS)' == 'Windows_NT'">"$(SolutionDir) "</PaddedSolutionDir>
++        <PaddedSolutionDir Condition=" '$(OS)' != 'Windows_NT' ">"$(SolutionDir)"</PaddedSolutionDir>
++
++        <!-- Commands -->
++        <RestoreCommand>$(NuGetCommand) install "$(PackagesConfig)" -source "$(PackageSources)"  $(NonInteractiveSwitch) $(RequireConsentSwitch) -solutionDir $(PaddedSolutionDir)</RestoreCommand>
++        <BuildCommand>$(NuGetCommand) pack "$(ProjectPath)" -Properties "Configuration=$(Configuration);Platform=$(Platform)" $(NonInteractiveSwitch) -OutputDirectory "$(PackageOutputDir)" -symbols</BuildCommand>
++
++        <!-- We need to ensure packages are restored prior to assembly resolve -->
++        <BuildDependsOn Condition="$(RestorePackages) == 'true'">
++            RestorePackages;
++            $(BuildDependsOn);
++        </BuildDependsOn>
++
++        <!-- Make the build depend on restore packages -->
++        <BuildDependsOn Condition="$(BuildPackage) == 'true'">
++            $(BuildDependsOn);
++            BuildPackage;
++        </BuildDependsOn>
++    </PropertyGroup>
++
++    <Target Name="CheckPrerequisites">
++        <!-- Raise an error if we're unable to locate nuget.exe  -->
++        <Error Condition="'$(DownloadNuGetExe)' != 'true' AND !Exists('$(NuGetExePath)')" Text="Unable to locate '$(NuGetExePath)'" />
++        <!--
++        Take advantage of MsBuild's build dependency tracking to make sure that we only ever download nuget.exe once.
++        This effectively acts as a lock that makes sure that the download operation will only happen once and all
++        parallel builds will have to wait for it to complete.
++        -->
++        <MsBuild Targets="_DownloadNuGet" Projects="$(MSBuildThisFileFullPath)" Properties="Configuration=NOT_IMPORTANT;DownloadNuGetExe=$(DownloadNuGetExe)" />
++    </Target>
++
++    <Target Name="_DownloadNuGet">
++        <DownloadNuGet OutputFilename="$(NuGetExePath)" Condition=" '$(DownloadNuGetExe)' == 'true' AND !Exists('$(NuGetExePath)')" />
++    </Target>
++
++    <Target Name="RestorePackages" DependsOnTargets="CheckPrerequisites">        
++        <Exec Command="$(RestoreCommand)"
++              Condition="'$(OS)' != 'Windows_NT' And Exists('$(PackagesConfig)')" />
++
++        <Exec Command="$(RestoreCommand)"
++              LogStandardErrorAsError="true"
++              Condition="'$(OS)' == 'Windows_NT' And Exists('$(PackagesConfig)')" />
++    </Target>
++
++    <Target Name="BuildPackage" DependsOnTargets="CheckPrerequisites">
++        <Exec Command="$(BuildCommand)"
++              Condition=" '$(OS)' != 'Windows_NT' " />
++
++        <Exec Command="$(BuildCommand)"
++              LogStandardErrorAsError="true"
++              Condition=" '$(OS)' == 'Windows_NT' " />
++    </Target>
++
++    <UsingTask TaskName="DownloadNuGet" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
++        <ParameterGroup>
++            <OutputFilename ParameterType="System.String" Required="true" />
++        </ParameterGroup>
++        <Task>
++            <Reference Include="System.Core" />
++            <Using Namespace="System" />
++            <Using Namespace="System.IO" />
++            <Using Namespace="System.Net" />
++            <Using Namespace="Microsoft.Build.Framework" />
++            <Using Namespace="Microsoft.Build.Utilities" />
++            <Code Type="Fragment" Language="cs">
++                <![CDATA[
++                try {
++                    OutputFilename = Path.GetFullPath(OutputFilename);
++
++                    Log.LogMessage("Downloading latest version of NuGet.exe...");
++                    WebClient webClient = new WebClient();
++                    webClient.DownloadFile("https://www.nuget.org/nuget.exe", OutputFilename);
++
++                    return true;
++                }
++                catch (Exception ex) {
++                    Log.LogErrorFromException(ex);
++                    return false;
++                }
++            ]]>
++            </Code>
++        </Task>
++    </UsingTask>
++</Project>
+diff --git a/HomeControl/HomeControl.csproj b/HomeControl/HomeControl.csproj
+index b74bbd6..47a059c 100644
+--- a/HomeControl/HomeControl.csproj
++++ b/HomeControl/HomeControl.csproj
+@@ -12,6 +12,8 @@
+     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+     <FileAlignment>512</FileAlignment>
+     <TargetFrameworkProfile />
++    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\ConnectBluetooth\</SolutionDir>
++    <RestorePackages>true</RestorePackages>
+   </PropertyGroup>
+   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+     <DebugSymbols>true</DebugSymbols>
+@@ -88,6 +90,13 @@
+     <None Include="packages.config" />
+   </ItemGroup>
+   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
++  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
++  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
++    <PropertyGroup>
++      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
++    </PropertyGroup>
++    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
++  </Target>
+   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+        Other similar extension points exist, see Microsoft.Common.targets.
+   <Target Name="BeforeBuild">
+diff --git a/HomeControl/obj/Debug/HomeControl.csproj.FileListAbsolute.txt b/HomeControl/obj/Debug/HomeControl.csproj.FileListAbsolute.txt
+index 6d5ce2a..8a8c4ec 100644
+--- a/HomeControl/obj/Debug/HomeControl.csproj.FileListAbsolute.txt
++++ b/HomeControl/obj/Debug/HomeControl.csproj.FileListAbsolute.txt
+@@ -15,3 +15,20 @@ E:\Dev\HomeControl\HomeControl\bin\Debug\log4net.xml
+ E:\Dev\HomeControl\HomeControl\obj\Debug\HomeControl.csprojResolveAssemblyReference.cache
+ E:\Dev\HomeControl\HomeControl\obj\Debug\HomeControl.dll
+ E:\Dev\HomeControl\HomeControl\obj\Debug\HomeControl.pdb
++D:\Dev\HomeControl\HomeControl\bin\Debug\HomeControl.dll
++D:\Dev\HomeControl\HomeControl\bin\Debug\HomeControl.pdb
++D:\Dev\HomeControl\HomeControl\bin\Debug\Castle.Core.dll
++D:\Dev\HomeControl\HomeControl\bin\Debug\Castle.Windsor.dll
++D:\Dev\HomeControl\HomeControl\bin\Debug\Helpers.dll
++D:\Dev\HomeControl\HomeControl\bin\Debug\HomeControl.Common.dll
++D:\Dev\HomeControl\HomeControl\bin\Debug\log4net.dll
++D:\Dev\HomeControl\HomeControl\bin\Debug\WifiDeviceIdentifier.dll
++D:\Dev\HomeControl\HomeControl\bin\Debug\Helpers.pdb
++D:\Dev\HomeControl\HomeControl\bin\Debug\HomeControl.Common.pdb
++D:\Dev\HomeControl\HomeControl\bin\Debug\WifiDeviceIdentifier.pdb
++D:\Dev\HomeControl\HomeControl\bin\Debug\Castle.Core.xml
++D:\Dev\HomeControl\HomeControl\bin\Debug\Castle.Windsor.xml
++D:\Dev\HomeControl\HomeControl\bin\Debug\log4net.xml
++D:\Dev\HomeControl\HomeControl\obj\Debug\HomeControl.csprojResolveAssemblyReference.cache
++D:\Dev\HomeControl\HomeControl\obj\Debug\HomeControl.dll
++D:\Dev\HomeControl\HomeControl\obj\Debug\HomeControl.pdb
+diff --git a/HomeControl/obj/Release/TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs b/HomeControl/obj/Release/TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs
+new file mode 100644
+index 0000000..e69de29
+diff --git a/HomeControl/obj/Release/TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs b/HomeControl/obj/Release/TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs
+new file mode 100644
+index 0000000..e69de29
+diff --git a/HomeControl/obj/Release/TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.cs b/HomeControl/obj/Release/TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.cs
+new file mode 100644
+index 0000000..e69de29
+diff --git a/HomeControl/obj/Release/build.force b/HomeControl/obj/Release/build.force
+new file mode 100644
+index 0000000..e69de29
+diff --git a/HomeControlCommon/HomeControl.Common.csproj b/HomeControlCommon/HomeControl.Common.csproj
+index 2b2eba3..7d089fd 100644
+--- a/HomeControlCommon/HomeControl.Common.csproj
++++ b/HomeControlCommon/HomeControl.Common.csproj
+@@ -11,6 +11,8 @@
+     <AssemblyName>HomeControl.Common</AssemblyName>
+     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+     <FileAlignment>512</FileAlignment>
++    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
++    <RestorePackages>true</RestorePackages>
+   </PropertyGroup>
+   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+     <DebugSymbols>true</DebugSymbols>
+@@ -68,6 +70,13 @@
+     </ProjectReference>
+   </ItemGroup>
+   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
++  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
++  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
++    <PropertyGroup>
++      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
++    </PropertyGroup>
++    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
++  </Target>
+   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+        Other similar extension points exist, see Microsoft.Common.targets.
+   <Target Name="BeforeBuild">
+diff --git a/HomeControlCommon/obj/Debug/HomeControl.Common.csproj.FileListAbsolute.txt b/HomeControlCommon/obj/Debug/HomeControl.Common.csproj.FileListAbsolute.txt
+index e978062..1d3cf64 100644
+--- a/HomeControlCommon/obj/Debug/HomeControl.Common.csproj.FileListAbsolute.txt
++++ b/HomeControlCommon/obj/Debug/HomeControl.Common.csproj.FileListAbsolute.txt
+@@ -11,3 +11,16 @@ E:\Dev\HomeControl\HomeControlCommon\obj\Debug\HomeControl.Common.pdb
+ E:\Dev\HomeControl\HomeControlCommon\bin\Debug\Helpers.dll
+ E:\Dev\HomeControl\HomeControlCommon\bin\Debug\Helpers.pdb
+ E:\Dev\HomeControl\HomeControlCommon\obj\Debug\HomeControl.Common.csprojResolveAssemblyReference.cache
++D:\dev\HomeControl\HomeControlCommon\bin\Debug\HomeControl.Common.dll
++D:\dev\HomeControl\HomeControlCommon\bin\Debug\HomeControl.Common.pdb
++D:\dev\HomeControl\HomeControlCommon\bin\Debug\Castle.Core.dll
++D:\dev\HomeControl\HomeControlCommon\bin\Debug\Castle.Windsor.dll
++D:\dev\HomeControl\HomeControlCommon\bin\Debug\Helpers.dll
++D:\dev\HomeControl\HomeControlCommon\bin\Debug\log4net.dll
++D:\dev\HomeControl\HomeControlCommon\bin\Debug\Helpers.pdb
++D:\dev\HomeControl\HomeControlCommon\bin\Debug\Castle.Core.xml
++D:\dev\HomeControl\HomeControlCommon\bin\Debug\Castle.Windsor.xml
++D:\dev\HomeControl\HomeControlCommon\bin\Debug\log4net.xml
++D:\dev\HomeControl\HomeControlCommon\obj\Debug\HomeControl.Common.csprojResolveAssemblyReference.cache
++D:\dev\HomeControl\HomeControlCommon\obj\Debug\HomeControl.Common.dll
++D:\dev\HomeControl\HomeControlCommon\obj\Debug\HomeControl.Common.pdb
+diff --git a/HomeControlService.App/HomeControlService.App.csproj b/HomeControlService.App/HomeControlService.App.csproj
+index c2c0b87..de8e65a 100644
+--- a/HomeControlService.App/HomeControlService.App.csproj
++++ b/HomeControlService.App/HomeControlService.App.csproj
+@@ -12,6 +12,8 @@
+     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+     <FileAlignment>512</FileAlignment>
+     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
++    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
++    <RestorePackages>true</RestorePackages>
+   </PropertyGroup>
+   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+     <PlatformTarget>AnyCPU</PlatformTarget>
+@@ -121,6 +123,13 @@
+     <Content Include="1434933026_MB__home.ico" />
+   </ItemGroup>
+   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
++  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
++  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
++    <PropertyGroup>
++      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
++    </PropertyGroup>
++    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
++  </Target>
+   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+        Other similar extension points exist, see Microsoft.Common.targets.
+   <Target Name="BeforeBuild">
+diff --git a/HomeControlService.App/obj/Debug/HomeControlService.App.csproj.FileListAbsolute.txt b/HomeControlService.App/obj/Debug/HomeControlService.App.csproj.FileListAbsolute.txt
+index dc53030..411ea2b 100644
+--- a/HomeControlService.App/obj/Debug/HomeControlService.App.csproj.FileListAbsolute.txt
++++ b/HomeControlService.App/obj/Debug/HomeControlService.App.csproj.FileListAbsolute.txt
+@@ -24,3 +24,29 @@ E:\Dev\HomeControl\HomeControlService.App\obj\Debug\HomeControlService.App.Prope
+ E:\Dev\HomeControl\HomeControlService.App\obj\Debug\HomeControlService.App.csproj.GenerateResource.Cache
+ E:\Dev\HomeControl\HomeControlService.App\obj\Debug\HomeControlService.App.exe
+ E:\Dev\HomeControl\HomeControlService.App\obj\Debug\HomeControlService.App.pdb
++D:\dev\HomeControl\HomeControlService.App\bin\Debug\HomeControlService.App.exe.config
++D:\dev\HomeControl\HomeControlService.App\obj\Debug\HomeControlService.App.exe
++D:\dev\HomeControl\HomeControlService.App\obj\Debug\HomeControlService.App.pdb
++D:\dev\HomeControl\HomeControlService.App\bin\Debug\log4net.config
++D:\dev\HomeControl\HomeControlService.App\bin\Debug\HomeControlService.App.exe
++D:\dev\HomeControl\HomeControlService.App\bin\Debug\HomeControlService.App.pdb
++D:\dev\HomeControl\HomeControlService.App\bin\Debug\Castle.Core.dll
++D:\dev\HomeControl\HomeControlService.App\bin\Debug\Castle.Windsor.dll
++D:\dev\HomeControl\HomeControlService.App\bin\Debug\HomeControlService.dll
++D:\dev\HomeControl\HomeControlService.App\bin\Debug\log4net.dll
++D:\dev\HomeControl\HomeControlService.App\bin\Debug\HomeControl.dll
++D:\dev\HomeControl\HomeControlService.App\bin\Debug\HomeControl.Common.dll
++D:\dev\HomeControl\HomeControlService.App\bin\Debug\WifiDeviceIdentifier.dll
++D:\dev\HomeControl\HomeControlService.App\bin\Debug\Helpers.dll
++D:\dev\HomeControl\HomeControlService.App\bin\Debug\HomeControlService.pdb
++D:\dev\HomeControl\HomeControlService.App\bin\Debug\Castle.Core.xml
++D:\dev\HomeControl\HomeControlService.App\bin\Debug\Castle.Windsor.xml
++D:\dev\HomeControl\HomeControlService.App\bin\Debug\log4net.xml
++D:\dev\HomeControl\HomeControlService.App\bin\Debug\HomeControl.pdb
++D:\dev\HomeControl\HomeControlService.App\bin\Debug\HomeControl.Common.pdb
++D:\dev\HomeControl\HomeControlService.App\bin\Debug\WifiDeviceIdentifier.pdb
++D:\dev\HomeControl\HomeControlService.App\bin\Debug\Helpers.pdb
++D:\dev\HomeControl\HomeControlService.App\obj\Debug\HomeControlService.App.csprojResolveAssemblyReference.cache
++D:\dev\HomeControl\HomeControlService.App\obj\Debug\HomeControlService.App.Form1.resources
++D:\dev\HomeControl\HomeControlService.App\obj\Debug\HomeControlService.App.Properties.Resources.resources
++D:\dev\HomeControl\HomeControlService.App\obj\Debug\HomeControlService.App.csproj.GenerateResource.Cache
+diff --git a/HomeControlService.Host/HomeControlService.Host.csproj b/HomeControlService.Host/HomeControlService.Host.csproj
+index 9acccb7..ab1589a 100644
+--- a/HomeControlService.Host/HomeControlService.Host.csproj
++++ b/HomeControlService.Host/HomeControlService.Host.csproj
+@@ -12,6 +12,8 @@
+     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+     <FileAlignment>512</FileAlignment>
+     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
++    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
++    <RestorePackages>true</RestorePackages>
+   </PropertyGroup>
+   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+     <PlatformTarget>AnyCPU</PlatformTarget>
+@@ -83,6 +85,13 @@
+     </ProjectReference>
+   </ItemGroup>
+   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
++  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
++  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
++    <PropertyGroup>
++      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
++    </PropertyGroup>
++    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
++  </Target>
+   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+        Other similar extension points exist, see Microsoft.Common.targets.
+   <Target Name="BeforeBuild">
+diff --git a/HomeControlService.Host/obj/Debug/HomeControlService.Host.csproj.FileListAbsolute.txt b/HomeControlService.Host/obj/Debug/HomeControlService.Host.csproj.FileListAbsolute.txt
+index 623e582..1105fa9 100644
+--- a/HomeControlService.Host/obj/Debug/HomeControlService.Host.csproj.FileListAbsolute.txt
++++ b/HomeControlService.Host/obj/Debug/HomeControlService.Host.csproj.FileListAbsolute.txt
+@@ -22,3 +22,27 @@ E:\Dev\HomeControl\HomeControlService.Host\bin\Debug\Helpers.pdb
+ E:\Dev\HomeControl\HomeControlService.Host\obj\Debug\HomeControlService.Host.csprojResolveAssemblyReference.cache
+ E:\Dev\HomeControl\HomeControlService.Host\obj\Debug\HomeControlService.Host.exe
+ E:\Dev\HomeControl\HomeControlService.Host\obj\Debug\HomeControlService.Host.pdb
++D:\dev\HomeControl\HomeControlService.Host\bin\Debug\log4net.config
++D:\dev\HomeControl\HomeControlService.Host\bin\Debug\HomeControlService.Host.exe.config
++D:\dev\HomeControl\HomeControlService.Host\bin\Debug\HomeControlService.Host.exe
++D:\dev\HomeControl\HomeControlService.Host\bin\Debug\HomeControlService.Host.pdb
++D:\dev\HomeControl\HomeControlService.Host\bin\Debug\Castle.Core.dll
++D:\dev\HomeControl\HomeControlService.Host\bin\Debug\Castle.Windsor.dll
++D:\dev\HomeControl\HomeControlService.Host\bin\Debug\HomeControlService.dll
++D:\dev\HomeControl\HomeControlService.Host\bin\Debug\log4net.dll
++D:\dev\HomeControl\HomeControlService.Host\bin\Debug\Topshelf.dll
++D:\dev\HomeControl\HomeControlService.Host\bin\Debug\HomeControl.dll
++D:\dev\HomeControl\HomeControlService.Host\bin\Debug\HomeControl.Common.dll
++D:\dev\HomeControl\HomeControlService.Host\bin\Debug\WifiDeviceIdentifier.dll
++D:\dev\HomeControl\HomeControlService.Host\bin\Debug\Helpers.dll
++D:\dev\HomeControl\HomeControlService.Host\bin\Debug\HomeControlService.pdb
++D:\dev\HomeControl\HomeControlService.Host\bin\Debug\Castle.Core.xml
++D:\dev\HomeControl\HomeControlService.Host\bin\Debug\Castle.Windsor.xml
++D:\dev\HomeControl\HomeControlService.Host\bin\Debug\log4net.xml
++D:\dev\HomeControl\HomeControlService.Host\bin\Debug\HomeControl.pdb
++D:\dev\HomeControl\HomeControlService.Host\bin\Debug\HomeControl.Common.pdb
++D:\dev\HomeControl\HomeControlService.Host\bin\Debug\WifiDeviceIdentifier.pdb
++D:\dev\HomeControl\HomeControlService.Host\bin\Debug\Helpers.pdb
++D:\dev\HomeControl\HomeControlService.Host\obj\Debug\HomeControlService.Host.csprojResolveAssemblyReference.cache
++D:\dev\HomeControl\HomeControlService.Host\obj\Debug\HomeControlService.Host.exe
++D:\dev\HomeControl\HomeControlService.Host\obj\Debug\HomeControlService.Host.pdb
+diff --git a/HomeControlService/HomeControlService.csproj b/HomeControlService/HomeControlService.csproj
+index 983e5ea..29334f3 100644
+--- a/HomeControlService/HomeControlService.csproj
++++ b/HomeControlService/HomeControlService.csproj
+@@ -11,6 +11,8 @@
+     <AssemblyName>HomeControlService</AssemblyName>
+     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+     <FileAlignment>512</FileAlignment>
++    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
++    <RestorePackages>true</RestorePackages>
+   </PropertyGroup>
+   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+     <DebugSymbols>true</DebugSymbols>
+@@ -70,6 +72,13 @@
+     </ProjectReference>
+   </ItemGroup>
+   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
++  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
++  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
++    <PropertyGroup>
++      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
++    </PropertyGroup>
++    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
++  </Target>
+   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+        Other similar extension points exist, see Microsoft.Common.targets.
+   <Target Name="BeforeBuild">
+diff --git a/HomeControlService/obj/Debug/HomeControlService.csproj.FileListAbsolute.txt b/HomeControlService/obj/Debug/HomeControlService.csproj.FileListAbsolute.txt
+index e79abcc..4726aa3 100644
+--- a/HomeControlService/obj/Debug/HomeControlService.csproj.FileListAbsolute.txt
++++ b/HomeControlService/obj/Debug/HomeControlService.csproj.FileListAbsolute.txt
+@@ -17,3 +17,22 @@ E:\Dev\HomeControl\HomeControlService\bin\Debug\WifiDeviceIdentifier.pdb
+ E:\Dev\HomeControl\HomeControlService\obj\Debug\HomeControlService.csprojResolveAssemblyReference.cache
+ E:\Dev\HomeControl\HomeControlService\obj\Debug\HomeControlService.dll
+ E:\Dev\HomeControl\HomeControlService\obj\Debug\HomeControlService.pdb
++D:\dev\HomeControl\HomeControlService\bin\Debug\HomeControlService.dll
++D:\dev\HomeControl\HomeControlService\bin\Debug\HomeControlService.pdb
++D:\dev\HomeControl\HomeControlService\bin\Debug\Castle.Core.dll
++D:\dev\HomeControl\HomeControlService\bin\Debug\Castle.Windsor.dll
++D:\dev\HomeControl\HomeControlService\bin\Debug\HomeControl.Common.dll
++D:\dev\HomeControl\HomeControlService\bin\Debug\HomeControl.dll
++D:\dev\HomeControl\HomeControlService\bin\Debug\log4net.dll
++D:\dev\HomeControl\HomeControlService\bin\Debug\Helpers.dll
++D:\dev\HomeControl\HomeControlService\bin\Debug\WifiDeviceIdentifier.dll
++D:\dev\HomeControl\HomeControlService\bin\Debug\HomeControl.Common.pdb
++D:\dev\HomeControl\HomeControlService\bin\Debug\HomeControl.pdb
++D:\dev\HomeControl\HomeControlService\bin\Debug\Castle.Core.xml
++D:\dev\HomeControl\HomeControlService\bin\Debug\Castle.Windsor.xml
++D:\dev\HomeControl\HomeControlService\bin\Debug\log4net.xml
++D:\dev\HomeControl\HomeControlService\bin\Debug\Helpers.pdb
++D:\dev\HomeControl\HomeControlService\bin\Debug\WifiDeviceIdentifier.pdb
++D:\dev\HomeControl\HomeControlService\obj\Debug\HomeControlService.csprojResolveAssemblyReference.cache
++D:\dev\HomeControl\HomeControlService\obj\Debug\HomeControlService.dll
++D:\dev\HomeControl\HomeControlService\obj\Debug\HomeControlService.pdb
+diff --git a/WifiPersonIdentifier/WifiDeviceIdentifier.csproj b/WifiPersonIdentifier/WifiDeviceIdentifier.csproj
+index 84a05ed..7aa874c 100644
+--- a/WifiPersonIdentifier/WifiDeviceIdentifier.csproj
++++ b/WifiPersonIdentifier/WifiDeviceIdentifier.csproj
+@@ -12,6 +12,8 @@
+     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+     <FileAlignment>512</FileAlignment>
+     <TargetFrameworkProfile />
++    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
++    <RestorePackages>true</RestorePackages>
+   </PropertyGroup>
+   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+     <DebugSymbols>true</DebugSymbols>
+@@ -72,6 +74,13 @@
+     </ProjectReference>
+   </ItemGroup>
+   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
++  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
++  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
++    <PropertyGroup>
++      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
++    </PropertyGroup>
++    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
++  </Target>
+   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+        Other similar extension points exist, see Microsoft.Common.targets.
+   <Target Name="BeforeBuild">
+diff --git a/WifiPersonIdentifier/obj/Debug/WifiDeviceIdentifier.csproj.FileListAbsolute.txt b/WifiPersonIdentifier/obj/Debug/WifiDeviceIdentifier.csproj.FileListAbsolute.txt
+index 1c8d993..9cc547b 100644
+--- a/WifiPersonIdentifier/obj/Debug/WifiDeviceIdentifier.csproj.FileListAbsolute.txt
++++ b/WifiPersonIdentifier/obj/Debug/WifiDeviceIdentifier.csproj.FileListAbsolute.txt
+@@ -13,3 +13,18 @@ E:\Dev\HomeControl\WifiPersonIdentifier\obj\Debug\WifiDeviceIdentifier.dll
+ E:\Dev\HomeControl\WifiPersonIdentifier\obj\Debug\WifiDeviceIdentifier.pdb
+ E:\Dev\HomeControl\WifiPersonIdentifier\bin\Debug\Helpers.dll
+ E:\Dev\HomeControl\WifiPersonIdentifier\bin\Debug\Helpers.pdb
++D:\dev\HomeControl\WifiPersonIdentifier\bin\Debug\WifiDeviceIdentifier.dll
++D:\dev\HomeControl\WifiPersonIdentifier\bin\Debug\WifiDeviceIdentifier.pdb
++D:\dev\HomeControl\WifiPersonIdentifier\bin\Debug\Castle.Core.dll
++D:\dev\HomeControl\WifiPersonIdentifier\bin\Debug\Castle.Windsor.dll
++D:\dev\HomeControl\WifiPersonIdentifier\bin\Debug\HomeControl.Common.dll
++D:\dev\HomeControl\WifiPersonIdentifier\bin\Debug\log4net.dll
++D:\dev\HomeControl\WifiPersonIdentifier\bin\Debug\Helpers.dll
++D:\dev\HomeControl\WifiPersonIdentifier\bin\Debug\HomeControl.Common.pdb
++D:\dev\HomeControl\WifiPersonIdentifier\bin\Debug\Castle.Core.xml
++D:\dev\HomeControl\WifiPersonIdentifier\bin\Debug\Castle.Windsor.xml
++D:\dev\HomeControl\WifiPersonIdentifier\bin\Debug\log4net.xml
++D:\dev\HomeControl\WifiPersonIdentifier\bin\Debug\Helpers.pdb
++D:\dev\HomeControl\WifiPersonIdentifier\obj\Debug\WifiDeviceIdentifier.csprojResolveAssemblyReference.cache
++D:\dev\HomeControl\WifiPersonIdentifier\obj\Debug\WifiDeviceIdentifier.dll
++D:\dev\HomeControl\WifiPersonIdentifier\obj\Debug\WifiDeviceIdentifier.pdb
