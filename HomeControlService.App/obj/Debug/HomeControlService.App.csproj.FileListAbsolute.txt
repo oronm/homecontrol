@@ -50,3 +50,6 @@ D:\Dev\HomeControl\HomeControlService.App\bin\Debug\Helpers.pdb
 D:\Dev\HomeControl\HomeControlService.App\obj\Debug\HomeControlService.App.csprojResolveAssemblyReference.cache
 D:\Dev\HomeControl\HomeControlService.App\obj\Debug\HomeControlService.App.exe
 D:\Dev\HomeControl\HomeControlService.App\obj\Debug\HomeControlService.App.pdb
+D:\Dev\HomeControl\HomeControlService.App\bin\Debug\Newtonsoft.Json.dll
+D:\Dev\HomeControl\HomeControlService.App\bin\Debug\Newtonsoft.Json.xml
+D:\dev\HomeControl\HomeControlService.App\bin\Debug\data\IdentifyingDevices.json

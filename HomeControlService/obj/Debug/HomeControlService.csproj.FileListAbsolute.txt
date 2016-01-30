@@ -36,3 +36,5 @@ D:\Dev\HomeControl\HomeControlService\bin\Debug\WifiDeviceIdentifier.pdb
 D:\Dev\HomeControl\HomeControlService\obj\Debug\HomeControlService.csprojResolveAssemblyReference.cache
 D:\Dev\HomeControl\HomeControlService\obj\Debug\HomeControlService.dll
 D:\Dev\HomeControl\HomeControlService\obj\Debug\HomeControlService.pdb
+D:\Dev\HomeControl\HomeControlService\bin\Debug\Newtonsoft.Json.dll
+D:\Dev\HomeControl\HomeControlService\bin\Debug\Newtonsoft.Json.xml

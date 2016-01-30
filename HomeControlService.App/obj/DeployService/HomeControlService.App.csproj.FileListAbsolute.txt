@@ -26,3 +26,14 @@ E:\Dev\deploy\HomeControlService.App\HomeControlService.App.exe.config
 E:\Dev\deploy\HomeControlService.App\log4net.config
 E:\Dev\deploy\HomeControlService.App\HomeControlService.App.exe
 E:\Dev\deploy\HomeControlService.App\HomeControlService.App.pdb
+D:\dev\deploy\HomeControlService.App\HomeControlService.App.exe.config
+D:\dev\HomeControl\HomeControlService.App\obj\DeployService\HomeControlService.App.exe
+D:\dev\HomeControl\HomeControlService.App\obj\DeployService\HomeControlService.App.pdb
+D:\dev\deploy\HomeControlService.App\data\IdentifyingDevices.json
+D:\dev\deploy\HomeControlService.App\log4net.config
+D:\dev\deploy\HomeControlService.App\HomeControlService.App.exe
+D:\dev\deploy\HomeControlService.App\HomeControlService.App.pdb
+D:\dev\HomeControl\HomeControlService.App\obj\DeployService\HomeControlService.App.csprojResolveAssemblyReference.cache
+D:\dev\HomeControl\HomeControlService.App\obj\DeployService\HomeControlService.App.Form1.resources
+D:\dev\HomeControl\HomeControlService.App\obj\DeployService\HomeControlService.App.Properties.Resources.resources
+D:\dev\HomeControl\HomeControlService.App\obj\DeployService\HomeControlService.App.csproj.GenerateResource.Cache

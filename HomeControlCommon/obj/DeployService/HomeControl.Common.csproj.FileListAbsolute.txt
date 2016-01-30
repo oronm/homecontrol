@@ -9,3 +9,14 @@ E:\Dev\HomeControl\HomeControlCommon\bin\DeployService\Castle.Windsor.xml
 E:\Dev\HomeControl\HomeControlCommon\bin\DeployService\log4net.xml
 E:\Dev\HomeControl\HomeControlCommon\obj\DeployService\HomeControl.Common.csprojResolveAssemblyReference.cache
 E:\Dev\HomeControl\HomeControlCommon\obj\DeployService\HomeControl.Common.dll
+D:\dev\HomeControl\HomeControlCommon\bin\DeployService\HomeControl.Common.dll
+D:\dev\HomeControl\HomeControlCommon\bin\DeployService\Castle.Core.dll
+D:\dev\HomeControl\HomeControlCommon\bin\DeployService\Castle.Windsor.dll
+D:\dev\HomeControl\HomeControlCommon\bin\DeployService\Helpers.dll
+D:\dev\HomeControl\HomeControlCommon\bin\DeployService\log4net.dll
+D:\dev\HomeControl\HomeControlCommon\bin\DeployService\Helpers.pdb
+D:\dev\HomeControl\HomeControlCommon\bin\DeployService\Castle.Core.xml
+D:\dev\HomeControl\HomeControlCommon\bin\DeployService\Castle.Windsor.xml
+D:\dev\HomeControl\HomeControlCommon\bin\DeployService\log4net.xml
+D:\dev\HomeControl\HomeControlCommon\obj\DeployService\HomeControl.Common.csprojResolveAssemblyReference.cache
+D:\dev\HomeControl\HomeControlCommon\obj\DeployService\HomeControl.Common.dll

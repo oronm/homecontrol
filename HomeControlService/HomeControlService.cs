@@ -20,8 +20,6 @@ namespace HomeControlService
         public HomeControlService(IHomeController homeController)
         {
             this.homeController = homeController;
-            homeController.OnPersonArrived += homeController_OnPersonArrived;
-            homeController.OnPersonLeft += homeController_OnPersonLeft;
         }
 
         void homeController_OnPersonLeft(object sender, HomeControl.PersonPresenceChangedEventArgs e)
@@ -44,11 +42,16 @@ namespace HomeControlService
         public void Start()
         {
             log.Info("Starting");
+            homeController.OnPersonArrived += homeController_OnPersonArrived;
+            homeController.OnPersonLeft += homeController_OnPersonLeft;
         }
 
         public bool Stop()
         {
             log.Info("Stopping");
+            homeController.OnPersonArrived -= homeController_OnPersonArrived;
+            homeController.OnPersonLeft -= homeController_OnPersonLeft;
+            
             return true;
         }
     }

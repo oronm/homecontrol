@@ -1,0 +1,16 @@
+﻿
+    [
+        /*{
+            "DeviceName" : "Galia's iPhone",
+            "DeviceId" :"",
+            "Owner" : "Galia",
+            "IdentificationMethod" : "WiFi"
+        },*/
+        {
+            "DeviceName" : "Oron's iPhone",
+            "DeviceId" :"6C:72:E7:5C:52:DF",
+            "Owner" : "Oron",
+            "IdentificationMethod" : "WiFi"
+        }
+    ]
+

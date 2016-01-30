@@ -32,3 +32,5 @@ D:\Dev\HomeControl\HomeControl\bin\Debug\Castle.Windsor.xml
 D:\Dev\HomeControl\HomeControl\bin\Debug\log4net.xml
 D:\Dev\HomeControl\HomeControl\obj\Debug\HomeControl.dll
 D:\Dev\HomeControl\HomeControl\obj\Debug\HomeControl.pdb
+D:\Dev\HomeControl\HomeControl\bin\Debug\Newtonsoft.Json.dll
+D:\Dev\HomeControl\HomeControl\bin\Debug\Newtonsoft.Json.xml

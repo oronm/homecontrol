@@ -8,3 +8,10 @@ E:\Dev\deploy\HomeControlService\HomeControlService.Host.pdb
 E:\Dev\HomeControl\HomeControlService.Host\obj\DeployService\HomeControlService.Host.csprojResolveAssemblyReference.cache
 E:\Dev\HomeControl\HomeControlService.Host\obj\DeployService\HomeControlService.Host.exe
 E:\Dev\HomeControl\HomeControlService.Host\obj\DeployService\HomeControlService.Host.pdb
+D:\dev\deploy\HomeControlService\log4net.config
+D:\dev\deploy\HomeControlService\HomeControlService.Host.exe.config
+D:\dev\deploy\HomeControlService\HomeControlService.Host.exe
+D:\dev\deploy\HomeControlService\HomeControlService.Host.pdb
+D:\dev\HomeControl\HomeControlService.Host\obj\DeployService\HomeControlService.Host.csprojResolveAssemblyReference.cache
+D:\dev\HomeControl\HomeControlService.Host\obj\DeployService\HomeControlService.Host.exe
+D:\dev\HomeControl\HomeControlService.Host\obj\DeployService\HomeControlService.Host.pdb

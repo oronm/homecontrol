@@ -15,6 +15,7 @@ namespace HomeControl
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private IDictionary<string, PersonState> state = null;
         private IPresnceIdentifier identifier;
+        private IResidentsRepository residentsRepository;
         private ConcurrentQueue<Action> presenceActions = new ConcurrentQueue<Action>();
 
 
@@ -22,30 +23,86 @@ namespace HomeControl
         public event EventHandler<PersonPresenceChangedEventArgs> OnPersonLeft; 
     
 
-        public HomeController(IPresnceIdentifier identifier)
+        public HomeController(IPresnceIdentifier identifier, IResidentsRepository residentsRepository)
         {
             this.identifier = identifier;
+            this.residentsRepository = residentsRepository;
             identifier.PersonArrived += identifier_PersonArrived;
             identifier.PersonLeft += identifier_PersonLeft;
 
-            identifier.registerPerson(new PersonRegistration()
-            {
-                personName = "Galia",
-                devicesDetails = new IDeviceDetails[] { 
-                    new WifiDeviceDetails() { DeviceId = "70-3E-AC-4C-AC-54", DeviceName = "Galia's iPhone" } 
-                }
-            });
-            identifier.registerPerson(new PersonRegistration()
-            {
-                personName = "Oron",
-                devicesDetails = new IDeviceDetails[] { 
-                    new WifiDeviceDetails() { DeviceId = "D4-F4-6F-23-93-09", DeviceName = "Oron's iPhone" } 
-                }
-            });
+            registerResidents();
 
 
             state = identifier.getState();
             Helper.StartRepetativeTask(HandleNewEvents, TimeSpan.FromSeconds(10));
+        }
+
+        private void registerResidents()
+        {
+            //identifier.registerPerson(new PersonRegistration()
+            //{
+            //    personName = "Galia",
+            //    devicesDetails = new IDeviceDetails[] { new WifiDeviceDetails("Galia's iPhone", "70-3E-AC-4C-AC-54") }
+
+            //});
+            //identifier.registerPerson(new PersonRegistration()
+            //{
+            //    personName = "Oron",
+            //    devicesDetails = new IDeviceDetails[] { new WifiDeviceDetails("Oron's iPhone", "D4-F4-6F-23-93-09") }
+
+            //});
+
+            try
+            {
+                var identifyingDevices = residentsRepository.GetIdentifyingDevices();
+                if (identifyingDevices == null || identifyingDevices.Count() == 0)
+                {
+                    log.Info("No residents registered, identifying devices list is empty");
+                    return;
+                }
+
+                // Group devices by resident
+                var residents =
+                    from identifyingDevice in identifyingDevices
+                    group identifyingDevice by identifyingDevice.Owner into residentDevices
+                    select new PersonRegistration
+                    {
+                        personName = residentDevices.Key,
+                        devicesDetails = residentDevices.Select(device => createDeviceDetails(device))
+                    };
+
+                log.Info("Registering Residents");
+                foreach (var resident in residents)
+                {
+                    string residentDetails = string.Format("{0} with {1} device(s)", resident.personName, resident.devicesDetails == null ? 0 : resident.devicesDetails.Count());
+                    try
+                    {
+                        
+                        identifier.registerPerson(resident);
+                        log.InfoFormat("Registered resident {0}", residentDetails);
+                    }
+                    catch (Exception ex)
+                    {
+                        log.Error(string.Format("Error registering resident {0}",residentDetails),ex);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Error("Failed to register residents, error loading identifying devices", ex);
+                throw;
+            }
+        }
+
+        private IDeviceDetails createDeviceDetails(IdentifyingDevice device)
+        {
+            if (device.IdentificationMethod != IdentificationMethodType.Wifi)
+            {
+                log.ErrorFormat("Encountered unsupported identifcation method {0} for resident {1}, device name={2} id={3}", device.IdentificationMethod, device.Owner, device.DeviceName, device.DeviceId);
+                return null;
+            }
+
+            return new WifiDeviceDetails(device.DeviceName, device.DeviceId);
         }
 
         private void HandleNewEvents()
