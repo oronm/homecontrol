@@ -18,7 +18,7 @@ namespace HomeControlService
         public void Install(IWindsorContainer container, IConfigurationStore store)
         {
             container.Register(
-                Component.For<IHomeController>().ImplementedBy<HomeController>(),
+                Component.For<IHomeController>().ImplementedBy<LocalHomeController>(),
                 Component.For<IResidentsRepository>().UsingFactoryMethod( (c) => new LocalFileResidentsRepository(
                     Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), ConfigurationManager.AppSettings["connectionString"])
                     ))

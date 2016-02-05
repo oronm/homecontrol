@@ -7,7 +7,6 @@ namespace HomeControl
 {
     public interface IPresnceIdentifier
     {
-        void DeviceConnected(string p);
         event EventHandler<string> PersonArrived;
         event EventHandler<string> PersonLeft;
         IDictionary<string, PersonState> getState();

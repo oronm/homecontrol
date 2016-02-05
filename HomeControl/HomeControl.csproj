@@ -71,7 +71,7 @@
     <Compile Include="IPresnceIDentifier.cs" />
     <Compile Include="IResidentsRepository.cs" />
     <Compile Include="LocalFileResidentsRepository.cs" />
-    <Compile Include="PersonIdentifier.cs" />
+    <Compile Include="PresenceIdentifier.cs" />
     <Compile Include="PersonPresenceChangedEventArgs.cs" />
     <Compile Include="PersonRegistration.cs" />
     <Compile Include="PersonState.cs" />

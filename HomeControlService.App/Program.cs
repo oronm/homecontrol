@@ -10,6 +10,10 @@ using log4net;
 
 namespace HomeControlService.App
 {
+    // TODO: Separate the srv to be system service and not user app
+    // TODO: Web server the holds the state
+    // TODO: Web app that shows the state
+
     static class Program
     {
         /// <summary>

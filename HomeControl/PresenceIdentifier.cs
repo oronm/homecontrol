@@ -92,7 +92,7 @@ namespace HomeControl
             }
         }
 
-        public void DeviceConnected(string personName)
+        private void DeviceConnected(string personName)
         {
             DateTime connectionTime = DateTime.UtcNow;
             if (string.IsNullOrWhiteSpace(personName)) { log.Warn("DeviceConnected for empty personname"); return; }

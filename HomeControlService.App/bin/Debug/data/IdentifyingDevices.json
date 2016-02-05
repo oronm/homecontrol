@@ -1,11 +1,16 @@
-﻿
-    [
-        /*{
+﻿    [
+        {
             "DeviceName" : "Galia's iPhone",
-            "DeviceId" :"",
+            "DeviceId" :"d4f46f239309",
             "Owner" : "Galia",
             "IdentificationMethod" : "WiFi"
-        },*/
+        },
+		{
+            "DeviceName" : "Galia's iPad",
+            "DeviceId" :"ec3586f15ec8",
+            "Owner" : "Galia",
+            "IdentificationMethod" : "WiFi"
+        },
         {
             "DeviceName" : "Oron's iPhone",
             "DeviceId" :"6C:72:E7:5C:52:DF",
@@ -13,4 +18,3 @@
             "IdentificationMethod" : "WiFi"
         }
     ]
-

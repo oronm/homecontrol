@@ -12,16 +12,14 @@ namespace HomeControl
 {
     public class HomeController : IHomeController
     {
-        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private IDictionary<string, PersonState> state = null;
-        private IPresnceIdentifier identifier;
-        private IResidentsRepository residentsRepository;
-        private ConcurrentQueue<Action> presenceActions = new ConcurrentQueue<Action>();
-
+        protected static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        protected IDictionary<string, PersonState> state = null;
+        protected IPresnceIdentifier identifier;
+        protected IResidentsRepository residentsRepository;
+        protected ConcurrentQueue<Action> presenceActions = new ConcurrentQueue<Action>();
 
         public event EventHandler<PersonPresenceChangedEventArgs> OnPersonArrived;
         public event EventHandler<PersonPresenceChangedEventArgs> OnPersonLeft; 
-    
 
         public HomeController(IPresnceIdentifier identifier, IResidentsRepository residentsRepository)
         {
@@ -37,21 +35,56 @@ namespace HomeControl
             Helper.StartRepetativeTask(HandleNewEvents, TimeSpan.FromSeconds(10));
         }
 
-        private void registerResidents()
+        protected virtual void registerResidents()
         {
-            //identifier.registerPerson(new PersonRegistration()
-            //{
-            //    personName = "Galia",
-            //    devicesDetails = new IDeviceDetails[] { new WifiDeviceDetails("Galia's iPhone", "70-3E-AC-4C-AC-54") }
+            
+        }
 
-            //});
-            //identifier.registerPerson(new PersonRegistration()
-            //{
-            //    personName = "Oron",
-            //    devicesDetails = new IDeviceDetails[] { new WifiDeviceDetails("Oron's iPhone", "D4-F4-6F-23-93-09") }
+        private void HandleNewEvents()
+        {
+            Action eventAction;
+            while (presenceActions.TryDequeue(out eventAction))
+            {
+                eventAction();
+            }
+        }
 
-            //});
+        private void identifier_PersonLeft(object sender, string e)
+        {
+            presenceActions.Enqueue(() => NotifyPersonLeft(e));
+        }
 
+        private void identifier_PersonArrived(object sender, string e)
+        {
+            presenceActions.Enqueue(() => NotifyPersonArrived(e));
+        }
+
+        protected virtual void NotifyPersonArrived(string p)
+        {
+            Notify(this.OnPersonArrived, p);
+        }
+
+        protected virtual void NotifyPersonLeft(string p)
+        {
+            Notify(this.OnPersonLeft, p);
+        }
+        
+        protected void Notify(EventHandler<PersonPresenceChangedEventArgs> eventHandler, string p)
+        {
+            var tmp = eventHandler;
+            if (tmp != null) tmp(this, new PersonPresenceChangedEventArgs() { Name = p, ChangeTimeUtc = DateTime.UtcNow });
+        }
+    }
+
+    public class LocalHomeController : HomeController
+    {
+        public LocalHomeController(IPresnceIdentifier identifier, IResidentsRepository residentsRepository)
+            : base(identifier, residentsRepository)
+        {
+        }
+
+        protected override void registerResidents()
+        {
             try
             {
                 var identifyingDevices = residentsRepository.GetIdentifyingDevices();
@@ -77,13 +110,13 @@ namespace HomeControl
                     string residentDetails = string.Format("{0} with {1} device(s)", resident.personName, resident.devicesDetails == null ? 0 : resident.devicesDetails.Count());
                     try
                     {
-                        
+
                         identifier.registerPerson(resident);
                         log.InfoFormat("Registered resident {0}", residentDetails);
                     }
                     catch (Exception ex)
                     {
-                        log.Error(string.Format("Error registering resident {0}",residentDetails),ex);
+                        log.Error(string.Format("Error registering resident {0}", residentDetails), ex);
                     }
                 }
             }
@@ -93,7 +126,6 @@ namespace HomeControl
                 throw;
             }
         }
-
         private IDeviceDetails createDeviceDetails(IdentifyingDevice device)
         {
             if (device.IdentificationMethod != IdentificationMethodType.Wifi)
@@ -105,73 +137,47 @@ namespace HomeControl
             return new WifiDeviceDetails(device.DeviceName, device.DeviceId);
         }
 
-        private void HandleNewEvents()
-        {
-            Action eventAction;
-            while (presenceActions.TryDequeue(out eventAction))
-            {
-                eventAction();
-            }
-        }
-
-        private void identifier_PersonLeft(object sender, string e)
+        protected override void NotifyPersonLeft(string e)
         {
             if (e == "Oron") presenceActions.Enqueue(NotifyOronLeftHome);
             else if (e == "Galia") presenceActions.Enqueue(NotifyGaliaLeftHome);
+            presenceActions.Enqueue(() => base.NotifyPersonLeft(e));
         }
 
-        private void identifier_PersonArrived(object sender, string e)
+        protected override void NotifyPersonArrived(string e)
         {
             if (e == "Oron") presenceActions.Enqueue(NotifyOronArrivedHome);
             else if (e == "Galia") presenceActions.Enqueue(NotifyGaliaArrivedHome);
+            presenceActions.Enqueue(() => base.NotifyPersonArrived(e));
         }
 
-        private void NotifyOronArrivedHome()
-        {
-            log.Info("Oron is Home!");
-            Helper.StartProcess(@"E:\Programs\OronIsHome.bat");
-            NotifyPersonArrived("Oron");
-        }
 
-        private void NotifyPersonArrived(string p)
-        {
-            Notify(this.OnPersonArrived, p);
-        }
-
-        private void NotifyPersonLeft(string p)
-        {
-            Notify(this.OnPersonLeft, p);
-        }
-        
-        private void Notify(EventHandler<PersonPresenceChangedEventArgs> eventHandler, string p)
-        {
-            var tmp = eventHandler;
-            if (tmp != null) tmp(this, new PersonPresenceChangedEventArgs() { Name = p, ChangeTimeUtc = DateTime.UtcNow });
-        }
-        
         private void NotifyOronLeftHome()
         {
             Helper.StartProcess(@"E:\Programs\OronIsNotHome.bat");
             log.Info("oron left home!");
-            NotifyPersonLeft("Oron");
         }
-
+        private void NotifyOronArrivedHome()
+        {
+            log.Info("Oron is Home!");
+            Helper.StartProcess(@"E:\Programs\OronIsHome.bat");
+        }
         private void NotifyGaliaArrivedHome()
         {
             log.Info("galia is home!");
             PersonState oronState;
             bool oronInState = state.TryGetValue("Oron", out oronState);
-            if ( !oronInState || !oronState.IsPresent())
+            if (!oronInState || !oronState.IsPresent())
             {
                 Helper.StartProcess(@"E:\Programs\GaliaIsHome.bat");
             }
-            NotifyPersonArrived("Galia");
         }
         private void NotifyGaliaLeftHome()
         {
             log.Info("Galia left home!");
             Helper.StartProcess(@"E:\Programs\GaliaIsNotHome.bat");
-            NotifyPersonLeft("Galia");
         }
+
+
     }
 }
