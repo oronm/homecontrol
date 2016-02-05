@@ -7,7 +7,7 @@
     <ProjectGuid>{B3C50FB9-25AD-43CB-8F4D-13294AE1831C}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HomeControlService.App</RootNamespace>
+    <RootNamespace>HomeControl.Local.App</RootNamespace>
     <AssemblyName>HomeControlService.App</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -45,7 +45,7 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>HomeControlService.App.Program</StartupObject>
+    <StartupObject>HomeControl.Local.App.Program</StartupObject>
   </PropertyGroup>
   <PropertyGroup />
   <PropertyGroup>
@@ -80,7 +80,9 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="HomeControlApplicationContext.cs" />
+    <Compile Include="IHomeController.cs" />
     <Compile Include="Installer.cs" />
+    <Compile Include="LocalHomeController.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">
@@ -94,6 +96,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="data\IdentifyingDevices.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -117,9 +120,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\HomeControlService\HomeControlService.csproj">
+    <ProjectReference Include="..\..\Common\Helpers\Helpers.csproj">
+      <Project>{73c414da-6f7a-4c1a-b393-6b37d172b394}</Project>
+      <Name>Helpers</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HomeControlService\HomeControl.Local.LocalHomeControlService.csproj">
       <Project>{b19e89ca-ba41-400c-9e47-56b4bea6d5d7}</Project>
-      <Name>HomeControlService</Name>
+      <Name>HomeControl.Local.LocalHomeControlService</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

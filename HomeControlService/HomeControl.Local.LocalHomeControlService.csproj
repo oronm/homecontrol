@@ -7,8 +7,8 @@
     <ProjectGuid>{B19E89CA-BA41-400C-9E47-56B4BEA6D5D7}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HomeControlService</RootNamespace>
-    <AssemblyName>HomeControlService</AssemblyName>
+    <RootNamespace>HomeControl.Local</RootNamespace>
+    <AssemblyName>LocalHomeControlService</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
@@ -54,15 +54,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HomeControlService.cs" />
+    <Compile Include="LocalHomeControlService.cs" />
+    <Compile Include="ILocalHomeControlService.cs" />
     <Compile Include="Installer.cs" />
     <Compile Include="PersonPresenceChangedEventArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="data\IdentifyingDevices.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\HomeControl.PresenseManager\HomeControl.PresenceManager.csproj">
+      <Project>{3fe760ff-5c54-41bd-b0c1-bccb94d8b7b1}</Project>
+      <Name>HomeControl.PresenceManager</Name>
+    </ProjectReference>
     <ProjectReference Include="..\HomeControlCommon\HomeControl.Detection.csproj">
       <Project>{8c0c56cb-9eb5-40ef-8f6e-78f5c3da5c3d}</Project>
       <Name>HomeControl.Detection</Name>

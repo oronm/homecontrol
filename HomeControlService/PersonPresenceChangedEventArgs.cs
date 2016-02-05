@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace HomeControlService
+namespace HomeControl.Local.Contracts
 {
     public class PersonPresenceChangedEventArgs
     {
@@ -15,5 +15,13 @@ namespace HomeControlService
             this.ChangeTimeUtc = e.ChangeTimeUtc;
             this.Name = e.Name;
         }
+    }
+
+    public class PersonState
+    {
+        public string name;
+        public DateTime lastSeen;
+        public DateTime lastLeft;
+        public bool IsPresent;
     }
 }

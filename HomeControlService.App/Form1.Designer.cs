@@ -1,4 +1,4 @@
-﻿namespace HomeControlService.App
+﻿namespace HomeControl.Local.App
 {
     partial class Form1
     {

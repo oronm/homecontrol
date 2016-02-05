@@ -11,14 +11,12 @@ using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using Castle.Windsor.Installer;
 
-namespace HomeControlService.App
+namespace HomeControl.Local.App
 {
     public partial class Form1 : Form
     {
-        private HomeControlService tc;
-        public Form1(HomeControlService tc)
+        public Form1()
         {
-            this.tc = tc;
             InitializeComponent();
         }
 
@@ -29,11 +27,6 @@ namespace HomeControlService.App
             this.ShowInTaskbar = false;
         }
 
-
-        private void runService()
-        {
-            tc.Start();
-        }
 
         private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
         {

@@ -5,22 +5,26 @@ using System.Text;
 using System.Threading.Tasks;
 using Castle.Core.Logging;
 using HomeControl;
+using HomeControl.Local.Contracts;
 using log4net;
 
-namespace HomeControlService
+namespace HomeControl.Local
 {
-    public class HomeControlService
+    public class LocalHomeControlService : ILocalHomeControlService
     {
         private readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private IHomeController homeController;
 
-        public event EventHandler<PersonPresenceChangedEventArgs> OnPersonArrived;
-        public event EventHandler<PersonPresenceChangedEventArgs> OnPersonLeft;
+        public event EventHandler<Contracts.PersonPresenceChangedEventArgs> OnPersonArrived;
+        public event EventHandler<Contracts.PersonPresenceChangedEventArgs> OnPersonLeft;
 
-        public HomeControlService(IHomeController homeController)
+        public LocalHomeControlService(IHomeController homeController)
         {
             this.homeController = homeController;
+            this.homeController.OnPersonArrived += homeController_OnPersonArrived;
+            this.homeController.OnPersonLeft += homeController_OnPersonLeft;
         }
+
 
         private void homeController_OnPersonLeft(object sender, HomeControl.PersonPresenceChangedEventArgs e)
         {
@@ -32,10 +36,10 @@ namespace HomeControlService
             Notify(this.OnPersonArrived, e);
         }
 
-        void Notify(EventHandler<PersonPresenceChangedEventArgs> handler, HomeControl.PersonPresenceChangedEventArgs e)
+        void Notify(EventHandler<Contracts.PersonPresenceChangedEventArgs> handler, HomeControl.PersonPresenceChangedEventArgs e)
         {
             var tmp = handler;
-            if (tmp != null) tmp(this, new PersonPresenceChangedEventArgs(e));
+            if (tmp != null) tmp(this, new Contracts.PersonPresenceChangedEventArgs(e));
         }
 
 
@@ -53,6 +57,17 @@ namespace HomeControlService
             homeController.OnPersonLeft -= homeController_OnPersonLeft;
             
             return true;
+        }
+
+
+        public IEnumerable<PersonState> GetState()
+        {
+            return this.homeController.GetState().Select(contollerState => new PersonState(){ 
+                name = contollerState.name,
+                lastSeen = contollerState.lastSeen,
+                lastLeft = contollerState.lastLeft,
+                IsPresent = contollerState.IsPresent()
+            });
         }
     }
 }

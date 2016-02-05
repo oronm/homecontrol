@@ -4,19 +4,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using HomeControl.Local.Contracts;
 
-namespace HomeControlService.App
+namespace HomeControl.Local.App
 {
     public class HomeControlApplicationContext : ApplicationContext
     {
         private System.Windows.Forms.NotifyIcon notifyIcon1;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
-        private HomeControlService tc;
+        private IHomeController tc;
 
         private const int BaloonTooltipTimeoutMS = 2000;
     
-        public HomeControlApplicationContext(HomeControlService tc)
+        public HomeControlApplicationContext(IHomeController tc)
         {
             this.tc = tc;
             tc.OnPersonArrived += tc_OnPersonArrived;
@@ -47,8 +48,6 @@ namespace HomeControlService.App
             this.toolStripMenuItem1.Size = new System.Drawing.Size(198, 30);
             this.toolStripMenuItem1.Text = "Exit";
             this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
-
-            tc.Start();
         }
 
         private void ShowTip(string title, string tip = null)

@@ -7,7 +7,7 @@
     <ProjectGuid>{53A5B53F-BF5C-4AFC-AAB0-744D73E2E67A}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HomeControlService.Host</RootNamespace>
+    <RootNamespace>HomeControl.Local.Host</RootNamespace>
     <AssemblyName>HomeControlService.Host</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -78,9 +78,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\HomeControlService\HomeControlService.csproj">
+    <ProjectReference Include="..\HomeControlService\HomeControl.Local.LocalHomeControlService.csproj">
       <Project>{b19e89ca-ba41-400c-9e47-56b4bea6d5d7}</Project>
-      <Name>HomeControlService</Name>
+      <Name>HomeControl.Local.LocalHomeControlService</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -14,7 +14,7 @@ using log4net;
 using Topshelf;
 using Topshelf.ServiceConfigurators;
 
-namespace HomeControlService.Host
+namespace HomeControl.Local.Host
 {
     class Program
     {
@@ -32,9 +32,9 @@ namespace HomeControlService.Host
             container.Install(FromAssembly.InDirectory(new AssemblyFilter(@".\")));
             var host = HostFactory.New(x =>
             {
-                x.Service(new Action<ServiceConfigurator<HomeControlService>>(s =>
+                x.Service(new Action<ServiceConfigurator<LocalHomeControlService>>(s =>
                 {
-                    s.ConstructUsing(name => container.Resolve<HomeControlService>());
+                    s.ConstructUsing(name => container.Resolve<LocalHomeControlService>());
                     s.WhenStarted(tc =>
                     {
                         tc.Start();

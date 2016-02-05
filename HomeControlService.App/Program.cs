@@ -8,7 +8,7 @@ using Castle.Windsor;
 using Castle.Windsor.Installer;
 using log4net;
 
-namespace HomeControlService.App
+namespace HomeControl.Local.App
 {
     // TODO: Separate the srv to be system service and not user app
     // TODO: Web server the holds the state

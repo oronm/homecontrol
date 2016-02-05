@@ -13,9 +13,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Helpers", "..\Common\Helper
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeControl.Detection", "HomeControlCommon\HomeControl.Detection.csproj", "{8C0C56CB-9EB5-40EF-8F6E-78F5C3DA5C3D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeControlService.App", "HomeControlService.App\HomeControlService.App.csproj", "{B3C50FB9-25AD-43CB-8F4D-13294AE1831C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeControl.Local.App", "HomeControlService.App\HomeControl.Local.App.csproj", "{B3C50FB9-25AD-43CB-8F4D-13294AE1831C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeControlService", "HomeControlService\HomeControlService.csproj", "{B19E89CA-BA41-400C-9E47-56B4BEA6D5D7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeControl.Local.LocalHomeControlService", "HomeControlService\HomeControl.Local.LocalHomeControlService.csproj", "{B19E89CA-BA41-400C-9E47-56B4BEA6D5D7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeControl.PresenceManager", "HomeControl.PresenseManager\HomeControl.PresenceManager.csproj", "{3FE760FF-5C54-41BD-B0C1-BCCB94D8B7B1}"
 EndProject
