@@ -22,12 +22,12 @@ namespace HomeControlService
             this.homeController = homeController;
         }
 
-        void homeController_OnPersonLeft(object sender, HomeControl.PersonPresenceChangedEventArgs e)
+        private void homeController_OnPersonLeft(object sender, HomeControl.PersonPresenceChangedEventArgs e)
         {
             Notify(this.OnPersonLeft, e);
         }
 
-        void homeController_OnPersonArrived(object sender, HomeControl.PersonPresenceChangedEventArgs e)
+        private void homeController_OnPersonArrived(object sender, HomeControl.PersonPresenceChangedEventArgs e)
         {
             Notify(this.OnPersonArrived, e);
         }

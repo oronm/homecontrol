@@ -1,0 +1,13 @@
+D:\Dev\HomeControl\HomeControlCommon\bin\Debug\HomeControl.Detection.dll
+D:\Dev\HomeControl\HomeControlCommon\bin\Debug\HomeControl.Detection.pdb
+D:\Dev\HomeControl\HomeControlCommon\bin\Debug\Castle.Core.dll
+D:\Dev\HomeControl\HomeControlCommon\bin\Debug\Castle.Windsor.dll
+D:\Dev\HomeControl\HomeControlCommon\bin\Debug\Helpers.dll
+D:\Dev\HomeControl\HomeControlCommon\bin\Debug\log4net.dll
+D:\Dev\HomeControl\HomeControlCommon\bin\Debug\Helpers.pdb
+D:\Dev\HomeControl\HomeControlCommon\bin\Debug\Castle.Core.xml
+D:\Dev\HomeControl\HomeControlCommon\bin\Debug\Castle.Windsor.xml
+D:\Dev\HomeControl\HomeControlCommon\bin\Debug\log4net.xml
+D:\Dev\HomeControl\HomeControlCommon\obj\Debug\HomeControl.Detection.csprojResolveAssemblyReference.cache
+D:\Dev\HomeControl\HomeControlCommon\obj\Debug\HomeControl.Detection.dll
+D:\Dev\HomeControl\HomeControlCommon\obj\Debug\HomeControl.Detection.pdb

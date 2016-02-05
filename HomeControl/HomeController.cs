@@ -5,8 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Helpers;
-using HomeControl.Common;
 using log4net;
+using HomeControl.PresenceManager;
+using HomeControl.Detection;
 
 namespace HomeControl
 {
@@ -14,14 +15,14 @@ namespace HomeControl
     {
         protected static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         protected IDictionary<string, PersonState> state = null;
-        protected IPresnceIdentifier identifier;
+        protected IPresenceManager identifier;
         protected IResidentsRepository residentsRepository;
         protected ConcurrentQueue<Action> presenceActions = new ConcurrentQueue<Action>();
 
         public event EventHandler<PersonPresenceChangedEventArgs> OnPersonArrived;
         public event EventHandler<PersonPresenceChangedEventArgs> OnPersonLeft; 
 
-        public HomeController(IPresnceIdentifier identifier, IResidentsRepository residentsRepository)
+        public HomeController(IPresenceManager identifier, IResidentsRepository residentsRepository)
         {
             this.identifier = identifier;
             this.residentsRepository = residentsRepository;
@@ -31,7 +32,7 @@ namespace HomeControl
             registerResidents();
 
 
-            state = identifier.getState();
+            state = identifier.GetState();
             Helper.StartRepetativeTask(HandleNewEvents, TimeSpan.FromSeconds(10));
         }
 
@@ -78,7 +79,7 @@ namespace HomeControl
 
     public class LocalHomeController : HomeController
     {
-        public LocalHomeController(IPresnceIdentifier identifier, IResidentsRepository residentsRepository)
+        public LocalHomeController(IPresenceManager identifier, IResidentsRepository residentsRepository)
             : base(identifier, residentsRepository)
         {
         }
@@ -100,18 +101,18 @@ namespace HomeControl
                     group identifyingDevice by identifyingDevice.Owner into residentDevices
                     select new PersonRegistration
                     {
-                        personName = residentDevices.Key,
-                        devicesDetails = residentDevices.Select(device => createDeviceDetails(device))
+                        PersonName = residentDevices.Key,
+                        Detectables = residentDevices.Select(device => createDeviceDetails(device))
                     };
 
                 log.Info("Registering Residents");
                 foreach (var resident in residents)
                 {
-                    string residentDetails = string.Format("{0} with {1} device(s)", resident.personName, resident.devicesDetails == null ? 0 : resident.devicesDetails.Count());
+                    string residentDetails = string.Format("{0} with {1} device(s)", resident.PersonName, resident.Detectables == null ? 0 : resident.Detectables.Count());
                     try
                     {
 
-                        identifier.registerPerson(resident);
+                        identifier.RegisterPerson(resident);
                         log.InfoFormat("Registered resident {0}", residentDetails);
                     }
                     catch (Exception ex)
@@ -126,7 +127,7 @@ namespace HomeControl
                 throw;
             }
         }
-        private IDeviceDetails createDeviceDetails(IdentifyingDevice device)
+        private IDetectable createDeviceDetails(IdentifyingDevice device)
         {
             if (device.IdentificationMethod != IdentificationMethodType.Wifi)
             {

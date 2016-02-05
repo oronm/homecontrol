@@ -7,7 +7,7 @@
     <ProjectGuid>{081DD74A-4100-45F9-A7FA-E18A7EC30C08}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HomeControl</RootNamespace>
+    <RootNamespace>HomeControl.PresenceManager</RootNamespace>
     <AssemblyName>HomeControl</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -65,16 +65,11 @@
   <ItemGroup>
     <Compile Include="HomeController.cs" />
     <Compile Include="IdentificationMethodType.cs" />
-    <Compile Include="IDevicePresenceFactory.cs" />
     <Compile Include="IHomeController.cs" />
     <Compile Include="Installer\Installer.cs" />
-    <Compile Include="IPresnceIDentifier.cs" />
     <Compile Include="IResidentsRepository.cs" />
     <Compile Include="LocalFileResidentsRepository.cs" />
-    <Compile Include="PresenceIdentifier.cs" />
     <Compile Include="PersonPresenceChangedEventArgs.cs" />
-    <Compile Include="PersonRegistration.cs" />
-    <Compile Include="PersonState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResidentDetails.cs" />
   </ItemGroup>
@@ -83,13 +78,13 @@
       <Project>{73c414da-6f7a-4c1a-b393-6b37d172b394}</Project>
       <Name>Helpers</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HomeControlCommon\HomeControl.Common.csproj">
-      <Project>{8c0c56cb-9eb5-40ef-8f6e-78f5c3da5c3d}</Project>
-      <Name>HomeControl.Common</Name>
+    <ProjectReference Include="..\HomeControl.PresenseManager\HomeControl.PresenceManager.csproj">
+      <Project>{3fe760ff-5c54-41bd-b0c1-bccb94d8b7b1}</Project>
+      <Name>HomeControl.PresenceManager</Name>
     </ProjectReference>
-    <ProjectReference Include="..\WifiPersonIdentifier\WifiDeviceIdentifier.csproj">
-      <Project>{341a4483-d21b-474c-92b9-8f02c2b53c3c}</Project>
-      <Name>WifiDeviceIdentifier</Name>
+    <ProjectReference Include="..\HomeControlCommon\HomeControl.Detection.csproj">
+      <Project>{8c0c56cb-9eb5-40ef-8f6e-78f5c3da5c3d}</Project>
+      <Name>HomeControl.Detection</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

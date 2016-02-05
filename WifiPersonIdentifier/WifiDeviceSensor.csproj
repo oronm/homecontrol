@@ -4,13 +4,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{8C0C56CB-9EB5-40EF-8F6E-78F5C3DA5C3D}</ProjectGuid>
+    <ProjectGuid>{341A4483-D21B-474C-92B9-8F02C2B53C3C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HomeControl.Common</RootNamespace>
-    <AssemblyName>HomeControl.Common</AssemblyName>
+    <RootNamespace>WifiDeviceSensor</RootNamespace>
+    <AssemblyName>WifiDeviceSensor</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
   </PropertyGroup>
@@ -32,7 +33,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DeployService|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\DeployService\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Castle.Core">
@@ -53,19 +60,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AbstractDevicePresenceIdentifier.cs" />
-    <Compile Include="DeviceDetails.cs" />
-    <Compile Include="DeviceIdentifiedEventArgs.cs" />
-    <Compile Include="IDevicePresenceIdentifier.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WifiDeviceSensor.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Common\Helpers\Helpers.csproj">
-      <Project>{73c414da-6f7a-4c1a-b393-6b37d172b394}</Project>
-      <Name>Helpers</Name>
+    <ProjectReference Include="..\HomeControlCommon\HomeControl.Detection.csproj">
+      <Project>{8c0c56cb-9eb5-40ef-8f6e-78f5c3da5c3d}</Project>
+      <Name>HomeControl.Detection</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -7,16 +7,18 @@ using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Facilities.TypedFactory;
 using Castle.Windsor;
-using HomeControl.PresenceManager;
+using HomeControl.Detection;
+using WifiDeviceIdentifier;
 
-namespace HomeControl.Installer
+namespace HomeControl.PresenceManager.Installer
 {
     public class Installer : IWindsorInstaller
     {
         public void Install(IWindsorContainer container, IConfigurationStore store)
         {
             container.Register(
-                Component.For<IPresenceManager>().ImplementedBy<HomeControl.PresenceManager.PresenceManager>()
+                Component.For<WifiDeviceSensor>().LifeStyle.Singleton,
+                Component.For<ISensorFactory>().ImplementedBy<SingletonsSensorFactory>().LifestyleSingleton()
                 );
         }
     }

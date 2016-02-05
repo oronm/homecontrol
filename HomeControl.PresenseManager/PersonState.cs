@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HomeControl
+namespace HomeControl.PresenceManager
 {
 
     public class PersonState
@@ -12,9 +12,9 @@ namespace HomeControl
         public string name;
         public DateTime lastSeen;
         public DateTime lastLeft;
-        public PersonStateConfiguration configuration;
+        private PersonPresencePolicy configuration;
 
-        public PersonState(string name, PersonStateConfiguration configuration)
+        internal PersonState(string name, PersonPresencePolicy configuration)
         {
             if (String.IsNullOrEmpty(name)) throw new ArgumentNullException("name");
             this.name = name;
@@ -24,7 +24,7 @@ namespace HomeControl
         }
         public bool IsPresent()
         {
-            return (DateTime.UtcNow - lastSeen) <= (configuration.MaximumAllowedDisconnection);
+            return (DateTime.UtcNow - lastSeen) <= (configuration.MaximumAbsencyAllowed);
         }
     }
 }

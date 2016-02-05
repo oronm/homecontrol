@@ -4,15 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HomeControl.Common
+namespace HomeControl.Detection
 {
-    public interface IDeviceDetails
+    public interface IDetectable
     {
-        string DeviceId { get; }
-        string DeviceName { get; }
+        string Identification { get; }
+        string Description { get; }
     }
 
-    public class WifiDeviceDetails : IDeviceDetails
+    public class WifiDeviceDetails : IDetectable
     {
         private readonly string deviceName;
         private readonly string MACAddress;
@@ -23,9 +23,9 @@ namespace HomeControl.Common
             this.MACAddress = macAddress;
         }
 
-        public string DeviceId { get { return MACAddress; } }
+        public string Identification { get { return MACAddress; } }
 
-        public string DeviceName { get { return this.deviceName; } }
+        public string Description { get { return this.deviceName; } }
     }
 
 }

@@ -4,17 +4,19 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{B19E89CA-BA41-400C-9E47-56B4BEA6D5D7}</ProjectGuid>
+    <ProjectGuid>{3FE760FF-5C54-41BD-B0C1-BCCB94D8B7B1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HomeControlService</RootNamespace>
-    <AssemblyName>HomeControlService</AssemblyName>
+    <RootNamespace>HomeControl.PresenceManager</RootNamespace>
+    <AssemblyName>HomeControl.PresenceManager</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -24,6 +26,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -31,8 +34,8 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DeployService|AnyCPU'">
-    <OutputPath>bin\DeployService\</OutputPath>
+  <PropertyGroup>
+    <StartupObject />
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Castle.Core">
@@ -45,7 +48,6 @@
       <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -54,22 +56,30 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HomeControlService.cs" />
-    <Compile Include="Installer.cs" />
-    <Compile Include="PersonPresenceChangedEventArgs.cs" />
+    <Compile Include="Installer\Installer.cs" />
+    <Compile Include="IPresenceManager.cs" />
+    <Compile Include="ISensorFactory.cs" />
+    <Compile Include="PersonRegistration.cs" />
+    <Compile Include="PersonState.cs" />
+    <Compile Include="PresenceManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Common\Helpers\Helpers.csproj">
+      <Project>{73c414da-6f7a-4c1a-b393-6b37d172b394}</Project>
+      <Name>Helpers</Name>
+    </ProjectReference>
     <ProjectReference Include="..\HomeControlCommon\HomeControl.Detection.csproj">
       <Project>{8c0c56cb-9eb5-40ef-8f6e-78f5c3da5c3d}</Project>
       <Name>HomeControl.Detection</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HomeControl\HomeControl.csproj">
-      <Project>{081dd74a-4100-45f9-a7fa-e18a7ec30c08}</Project>
-      <Name>HomeControl</Name>
+    <ProjectReference Include="..\WifiPersonIdentifier\WifiDeviceSensor.csproj">
+      <Project>{341a4483-d21b-474c-92b9-8f02c2b53c3c}</Project>
+      <Name>WifiDeviceSensor</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

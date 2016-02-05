@@ -6,22 +6,22 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using HomeControl.Common;
+using HomeControl.Detection;
 using log4net;
 
 namespace WifiDeviceIdentifier
 {
-    public class WifiDevicePresenceIdentifier : AbstractTimedDevicePresenceIDentifier, IDevicePresenceIdentifier
+    public class WifiDeviceSensor : AbstractTimedSensor, ISensor
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
-        protected override IEnumerable<IDeviceDetails> IdentifyDevicesPresence()
+        protected override IEnumerable<IDetectable> Detect()
         {
-            var devices = this.registeredDevices.Select((kvp) => kvp.Value);
-            log.DebugFormat("MACs Registered: {0}{1}", Environment.NewLine + "\t", String.Join(Environment.NewLine + "\t", devices.Select(device => device.DeviceId + " " + device.DeviceName)));
+            var devices = this.registeredDetectables.Select((kvp) => kvp.Value);
+            log.DebugFormat("MACs Registered: {0}{1}", Environment.NewLine + "\t", String.Join(Environment.NewLine + "\t", devices.Select(device => device.Identification + " " + device.Description)));
             IEnumerable<string> connectedMACs = getConnectedMacs();
             log.DebugFormat("MACs Found: {0}{1}", Environment.NewLine+"\t", String.Join(Environment.NewLine+"\t", connectedMACs));
-            return devices.Where(deviceInfo => connectedMACs.Contains(parseMacFromString(deviceInfo.DeviceId)));
+            return devices.Where(deviceInfo => connectedMACs.Contains(parseMacFromString(deviceInfo.Identification)));
         }
 
         private IEnumerable<string> getConnectedMacs()
