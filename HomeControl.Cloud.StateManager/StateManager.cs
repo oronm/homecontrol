@@ -1,23 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
 using HomeControl.Cloud.Contracts;
 using HomeControl.Cloud.Contracts.Models;
 using HomeControl.Cloud.Model;
+using log4net;
 
 namespace HomeControl.Cloud.Managers
 {
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     public class StateManager : IStateFeed, IStateReport
     {
+        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private IStateStore stateStore;
+
+        // TODO : Convert StateManager to work with IOC
         public StateManager()
         {
+            log.InfoFormat("st mgr created {0}", DateTime.Now.ToShortTimeString());
             this.stateStore = new StateStore();
         }
         public StateManager(IStateStore stateStore)
         {
+            log.InfoFormat("st mgr created with store at {0}", DateTime.Now.ToShortTimeString());
             this.stateStore = stateStore;
         }
 
@@ -43,17 +51,20 @@ namespace HomeControl.Cloud.Managers
             return new PersonState(person.Name, person.LastSeen, person.LastLeft, person.IsPresent);
         }
 
-        public void test(string name)
-        {
-        }
-
         public IEnumerable<PersonState> GetLocationState(string Realm, string Group, string Location)
         {
+            log.Info("getlocstate");
             var people = stateStore.GetLocationState(Realm, Group, Location);
+            log.InfoFormat("getlocstate people {0}", people == null ? "null" : people.Count().ToString());
             IEnumerable<PersonState> result = null;
             if (people != null)
             {
                 result = people.Select(person => CreatePersonState(person));
+                log.InfoFormat("getlocstate result {0}", result == null ? "null" : result.Count().ToString());
+                foreach (var person in people)
+                {
+                    log.InfoFormat("person {0} {1} {2} {3}", person.Name, person.LastSeen.ToShortDateString(), person.LastLeft.ToShortDateString(), person.IsPresent);
+                }
             }
             return result;
         }

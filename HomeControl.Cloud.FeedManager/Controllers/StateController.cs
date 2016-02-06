@@ -19,6 +19,7 @@ namespace HomeControl.Cloud.FeedManager.Controllers
     {
         private IStateFeed stateFeed;
 
+        // TODO : Convert StateController to work with DI
         public StateController()
         {
             var fac = new ChannelFactory<IStateFeed>(new WebHttpBinding(), new EndpointAddress("http://localhost:10000/Managers"));

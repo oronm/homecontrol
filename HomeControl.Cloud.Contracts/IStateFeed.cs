@@ -16,8 +16,5 @@ namespace HomeControl.Cloud.Contracts
 
         [OperationContract(Name = "FeedPersonState")]
         Task Feed(UpdatePersonState newPersonState);
-
-        [OperationContract]
-        void test(string name);
     }
 }

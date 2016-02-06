@@ -18,9 +18,11 @@ namespace HomeControl.Cloud.ManagersBasicHost
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private string _serviceUri;
         private ServiceHost _serviceHost;
+        private TServiceContract _instance;
 
-        public WcfServiceWrapper()
+        public WcfServiceWrapper(TServiceContract instance)
         {
+            this._instance = instance;
         }
 
         protected override void OnStart(string[] args)
@@ -47,7 +49,9 @@ namespace HomeControl.Cloud.ManagersBasicHost
                     _serviceHost.Close();
                 }
 
-                _serviceHost = new ServiceHost(typeof(TServiceImplementation));
+                // TODO : Convert svc wrapper to work with custom host factory
+                _serviceHost = new ServiceHost(_instance);
+                //_serviceHost = new ServiceHost(typeof(TServiceImplementation));
             }
             catch (Exception e)
             {
@@ -62,7 +66,7 @@ namespace HomeControl.Cloud.ManagersBasicHost
                 
                 var webHttpBehavior = new WebHttpBehavior
                 {
-                    DefaultBodyStyle = WebMessageBodyStyle.WrappedRequest,
+                    DefaultBodyStyle = WebMessageBodyStyle.Wrapped,
                     DefaultOutgoingResponseFormat = WebMessageFormat.Json,
                     DefaultOutgoingRequestFormat = WebMessageFormat.Json
                 };

@@ -9,15 +9,15 @@ namespace HomeControl.Cloud.Model
     public class Person
     {
         public readonly string Name;
-        public readonly DateTime LastSeen;
-        public readonly DateTime LastLeft;
-        public readonly bool IsPresent;
+        public DateTime LastSeen;
+        public DateTime LastLeft;
+        public bool IsPresent;
 
         public Person(string name)
         {
             this.Name = name;
-            LastSeen = DateTime.MinValue;
-            LastLeft = DateTime.MinValue;
+            LastSeen = DateTime.UtcNow.AddYears(-100);
+            LastLeft = DateTime.UtcNow.AddYears(-100);
             IsPresent = false;
         }
 
