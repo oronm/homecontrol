@@ -1,5 +1,0 @@
-E:\Dev\ConnectBluetooth\WifiPersonIdentifier\bin\DeployService\WifiPersonIdentifier.dll
-E:\Dev\ConnectBluetooth\WifiPersonIdentifier\bin\DeployService\WifiPersonIdentifier.pdb
-E:\Dev\ConnectBluetooth\WifiPersonIdentifier\obj\DeployService\WifiPersonIdentifier.dll
-E:\Dev\ConnectBluetooth\WifiPersonIdentifier\obj\DeployService\WifiPersonIdentifier.pdb
-E:\Dev\ConnectBluetooth\WifiPersonIdentifier\obj\DeployService\WifiPersonIdentifier.csprojResolveAssemblyReference.cache
