@@ -9,13 +9,23 @@ using HomeControl.Cloud.Contracts;
 using HomeControl.Cloud.Contracts.Models;
 using WebApiBasicAuth.Filters;
 using HomeControl.Cloud.Managers;
+using System.ServiceModel;
+using System.ServiceModel.Description;
+using System.ServiceModel.Web;
 
 namespace HomeControl.Cloud.FeedManager.Controllers
 {
     public class StateController : ApiController
     {
-        private IStateFeed stateFeed = new StateManager(new StateStore());
+        private IStateFeed stateFeed;
 
+        public StateController()
+        {
+            var fac = new ChannelFactory<IStateFeed>(new WebHttpBinding(), new EndpointAddress("http://localhost:10000/Managers"));
+            fac.Endpoint.EndpointBehaviors.Add(new WebHttpBehavior() { DefaultOutgoingRequestFormat = WebMessageFormat.Json, DefaultOutgoingResponseFormat = WebMessageFormat.Json, DefaultBodyStyle = WebMessageBodyStyle.WrappedRequest });
+            this.stateFeed = fac.CreateChannel();   
+        }
+        
         private bool validateIdentity(FeederIdentity identity)
         {
             return identity != null &&

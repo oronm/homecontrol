@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeControl.Cloud.Contracts
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeControl.Cloud.StateManager", "HomeControl.Cloud.StateManager\HomeControl.Cloud.StateManager.csproj", "{B2296300-3C83-47EE-A125-5B4A918E62C6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeControl.Cloud.ManagersBasicHost", "HomeControl.Cloud.ManagersBasicHost\HomeControl.Cloud.ManagersBasicHost.csproj", "{BD130346-4999-44E4-9B87-BAE36E226387}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -102,6 +104,12 @@ Global
 		{B2296300-3C83-47EE-A125-5B4A918E62C6}.DeployService|Any CPU.Build.0 = Debug|Any CPU
 		{B2296300-3C83-47EE-A125-5B4A918E62C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B2296300-3C83-47EE-A125-5B4A918E62C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD130346-4999-44E4-9B87-BAE36E226387}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD130346-4999-44E4-9B87-BAE36E226387}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD130346-4999-44E4-9B87-BAE36E226387}.DeployService|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD130346-4999-44E4-9B87-BAE36E226387}.DeployService|Any CPU.Build.0 = Debug|Any CPU
+		{BD130346-4999-44E4-9B87-BAE36E226387}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD130346-4999-44E4-9B87-BAE36E226387}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -117,5 +125,6 @@ Global
 		{E43488C8-58AC-4CB1-9A54-E1503BA4600F} = {D5AB0813-6BD1-4055-9EDA-BE775AA6FBAC}
 		{3AEA9176-F05A-405B-B2A9-9C576623A90D} = {D5AB0813-6BD1-4055-9EDA-BE775AA6FBAC}
 		{B2296300-3C83-47EE-A125-5B4A918E62C6} = {D5AB0813-6BD1-4055-9EDA-BE775AA6FBAC}
+		{BD130346-4999-44E4-9B87-BAE36E226387} = {D5AB0813-6BD1-4055-9EDA-BE775AA6FBAC}
 	EndGlobalSection
 EndGlobal

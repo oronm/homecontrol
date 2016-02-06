@@ -12,7 +12,10 @@ namespace HomeControl.Cloud.Managers
     public class StateManager : IStateFeed
     {
         private IStateStore stateStore;
-
+        public StateManager()
+        {
+            this.stateStore = new StateStore();
+        }
         public StateManager(IStateStore stateStore)
         {
             this.stateStore = stateStore;
@@ -34,6 +37,11 @@ namespace HomeControl.Cloud.Managers
         private Person CreatePerson(PersonState personState)
         {
             return new Person(personState.name, personState.lastSeen, personState.lastLeft, personState.IsPresent);
+        }
+
+
+        public void test(string name)
+        {
         }
     }
 }
