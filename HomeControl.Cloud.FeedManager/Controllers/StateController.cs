@@ -12,6 +12,7 @@ using HomeControl.Cloud.Managers;
 using System.ServiceModel;
 using System.ServiceModel.Description;
 using System.ServiceModel.Web;
+using System.Configuration;
 
 namespace HomeControl.Cloud.FeedManager.Controllers
 {
@@ -22,7 +23,7 @@ namespace HomeControl.Cloud.FeedManager.Controllers
         // TODO : Convert StateController to work with DI
         public StateController()
         {
-            var fac = new ChannelFactory<IStateFeed>(new WebHttpBinding(), new EndpointAddress("http://localhost:10000/Managers"));
+            var fac = new ChannelFactory<IStateFeed>(new WebHttpBinding(), new EndpointAddress(ConfigurationManager.AppSettings["SVC.Managers.Endpoint"]));
             fac.Endpoint.EndpointBehaviors.Add(new WebHttpBehavior() { DefaultOutgoingRequestFormat = WebMessageFormat.Json, DefaultOutgoingResponseFormat = WebMessageFormat.Json, DefaultBodyStyle = WebMessageBodyStyle.WrappedRequest });
             this.stateFeed = fac.CreateChannel();   
         }

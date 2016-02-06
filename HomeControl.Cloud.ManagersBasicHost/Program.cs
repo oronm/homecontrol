@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -44,7 +45,10 @@ namespace HomeControl.Cloud.ManagersBasicHost
                 c.Service(new Action<ServiceConfigurator<Services>>(s =>
                 {
                     s.ConstructUsing(name => container.Resolve<Services>());
-                    s.WhenStarted(x => { x.ReportSVC.Start("Report", "http://localhost:10001/Report"); x.FeedSVC.Start("Managers", "http://localhost:10000/Managers");  });
+                    s.WhenStarted(x => { 
+                        x.ReportSVC.Start("Report", ConfigurationManager.AppSettings["SVC.Report.Endpoint"]); 
+                        x.FeedSVC.Start("Managers", ConfigurationManager.AppSettings["SVC.Managers.Endpoint"]); 
+                    });
                     s.WhenStopped(x => { x.ReportSVC.Stop(); x.FeedSVC.Stop(); });
                 }));
 
