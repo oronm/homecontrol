@@ -14,6 +14,17 @@ using Topshelf.ServiceConfigurators;
 
 namespace HomeControl.Cloud.ManagersBasicHost
 {
+    class Services
+    {
+        public WcfServiceWrapper<StateManager, IStateReport> ReportSVC;
+        public WcfServiceWrapper<StateManager, IStateFeed> FeedSVC;
+        public Services(WcfServiceWrapper<StateManager, IStateReport> reportSVC, WcfServiceWrapper<StateManager, IStateFeed> feedSVC)
+        {
+            ReportSVC = reportSVC;
+            FeedSVC = feedSVC;
+        }
+    }
+
     class Program
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -30,16 +41,29 @@ namespace HomeControl.Cloud.ManagersBasicHost
             container.Install(FromAssembly.InDirectory(new AssemblyFilter(@".\")));
             var host = HostFactory.New(c =>
             {
-                c.Service(new Action<ServiceConfigurator<WcfServiceWrapper<StateManager, IStateFeed>>>(s =>
+                c.Service(new Action<ServiceConfigurator<Services>>(s =>
                 {
-                    s.ConstructUsing( name => container.Resolve<WcfServiceWrapper<StateManager, IStateFeed>>());
-                    s.WhenStarted(x => x.Start("Managers", "http://localhost:10000/Managers"));
-                    s.WhenStopped(tc => tc.Stop());
+                    s.ConstructUsing(name => container.Resolve<Services>());
+                    s.WhenStarted(x => { x.ReportSVC.Start("Report", "http://localhost:10001/Report"); x.FeedSVC.Start("Managers", "http://localhost:10000/Managers");  });
+                    s.WhenStopped(x => { x.ReportSVC.Stop(); x.FeedSVC.Stop(); });
                 }));
 
                 c.RunAsLocalSystem();
             });
+            //var host2 = HostFactory.New(c =>
+            //{
+            //    c.Service(new Action<ServiceConfigurator<WcfServiceWrapper<StateManager, IStateReport>>>(s =>
+            //    {
+            //        s.ConstructUsing(name => container.Resolve<WcfServiceWrapper<StateManager, IStateReport>>());
+            //        s.WhenStarted(x => x.Start("Report", "http://localhost:10001/Report"));
+            //        s.WhenStopped(tc => tc.Stop());
+            //    }));
+
+            //    c.RunAsLocalSystem();
+            //});
+
             host.Run();
+            //host2.Run();
         }
     }
 }

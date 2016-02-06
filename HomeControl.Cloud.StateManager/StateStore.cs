@@ -64,6 +64,21 @@ namespace HomeControl.Cloud.Managers
                 peopleIndex.TryUpdate(key, oldValue, person);
             }
         }
+
+
+        public IEnumerable<Person> GetLocationState(string Realm, string Group, string Location)
+        {
+            var realm = realms.SingleOrDefault(rlm => rlm.RealmName == Realm);
+            if (realm == null) return null;
+
+            var group = realm.groups.SingleOrDefault(grp => grp.GroupName == Group);
+            if (group == null) return null;
+
+            var loc = group.Locations.SingleOrDefault(lc => lc.LocationName == Location);
+            if (loc == null) return null;
+
+            return loc.People.ToArray();
+        }
     }
 
     class IndexKey

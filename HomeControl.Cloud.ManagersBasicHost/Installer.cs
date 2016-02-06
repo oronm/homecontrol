@@ -16,8 +16,10 @@ namespace HomeControl.Cloud.ManagersBasicHost
         public void Install(IWindsorContainer container, IConfigurationStore store)
         {
             container.Register(
-                Component.For<IStateFeed>().ImplementedBy<StateManager>().LifestyleSingleton(),
-                Component.For<WcfServiceWrapper<StateManager, IStateFeed>>()
+                Component.For<IStateFeed, IStateReport>().ImplementedBy<StateManager>().LifestyleSingleton(),
+                Component.For<Services>(),
+                Component.For<WcfServiceWrapper<StateManager, IStateFeed>>(),
+                Component.For<WcfServiceWrapper<StateManager, IStateReport>>()
                 );
         }
     }

@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IStateFeed.cs" />
+    <Compile Include="IStateReport.cs" />
     <Compile Include="Models\FeederIdentity.cs" />
     <Compile Include="Models\State.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

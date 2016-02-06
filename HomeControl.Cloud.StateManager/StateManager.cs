@@ -9,7 +9,7 @@ using HomeControl.Cloud.Model;
 
 namespace HomeControl.Cloud.Managers
 {
-    public class StateManager : IStateFeed
+    public class StateManager : IStateFeed, IStateReport
     {
         private IStateStore stateStore;
         public StateManager()
@@ -38,10 +38,24 @@ namespace HomeControl.Cloud.Managers
         {
             return new Person(personState.name, personState.lastSeen, personState.lastLeft, personState.IsPresent);
         }
-
+        private PersonState CreatePersonState(Person person)
+        {
+            return new PersonState(person.Name, person.LastSeen, person.LastLeft, person.IsPresent);
+        }
 
         public void test(string name)
         {
+        }
+
+        public IEnumerable<PersonState> GetLocationState(string Realm, string Group, string Location)
+        {
+            var people = stateStore.GetLocationState(Realm, Group, Location);
+            IEnumerable<PersonState> result = null;
+            if (people != null)
+            {
+                result = people.Select(person => CreatePersonState(person));
+            }
+            return result;
         }
     }
 }

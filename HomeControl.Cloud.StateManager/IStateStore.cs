@@ -10,5 +10,7 @@ namespace HomeControl.Cloud.Managers
     {
         void UpdateLocationState(string Realm, string Group, string Location, IEnumerable<Person> people);
         void UpdatePersonState(string Realm, string Group, string Location, Person person);
+
+        IEnumerable<Person> GetLocationState(string Realm, string Group, string Location);
     }
 }

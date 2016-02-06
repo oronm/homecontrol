@@ -17,6 +17,14 @@ namespace HomeControl.Cloud.Contracts.Models
         public DateTime lastLeft;
         [DataMember]
         public bool IsPresent;
+
+        public PersonState(string name, DateTime lastSeen, DateTime lastLeft, bool isPresent)
+        {
+            this.name = name;
+            this.lastSeen = lastSeen;
+            this.lastLeft = lastLeft;
+            this.IsPresent = isPresent;
+        }
     }
 
     [DataContract]
