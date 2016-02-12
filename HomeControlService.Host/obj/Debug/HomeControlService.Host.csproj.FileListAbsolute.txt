@@ -51,3 +51,6 @@ D:\Dev\HomeControl\HomeControlService.Host\obj\Debug\HomeControlService.Host.csp
 D:\Dev\HomeControl\HomeControlService.Host\obj\Debug\HomeControlService.Host.exe
 D:\Dev\HomeControl\HomeControlService.Host\obj\Debug\HomeControlService.Host.pdb
 D:\Dev\HomeControl\HomeControlService.Host\bin\Debug\data\IdentifyingDevices.json
+D:\Dev\HomeControl\HomeControlService.Host\bin\Debug\System.Net.Http.Formatting.dll
+D:\Dev\HomeControl\HomeControlService.Host\bin\Debug\System.Net.Http.Formatting.xml
+D:\Dev\HomeControl\HomeControlService.Host\obj\Debug\HomeControlService.Host.csproj.HomeControlService.Host.exe.config

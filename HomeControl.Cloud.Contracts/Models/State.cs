@@ -36,7 +36,12 @@ namespace HomeControl.Cloud.Contracts.Models
         public string Group;
         [DataMember]
         public string Location;
+        public override string ToString()
+        {
+            return string.Concat(Realm, ",", Group, ",", Location);
+        }
     }
+
 
     [DataContract]
     public class UpdateLocationState : FeedMessage

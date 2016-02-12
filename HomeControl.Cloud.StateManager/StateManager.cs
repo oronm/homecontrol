@@ -31,6 +31,7 @@ namespace HomeControl.Cloud.Managers
 
         public async Task Feed(UpdateLocationState newState)
         {
+            log.DebugFormat("got location state {0}", newState == null ? "null" : newState.ToString());
             if (newState == null) throw new ArgumentNullException("newState");
             IEnumerable<Person> people = newState.MembersState.Select(ps => CreatePerson(ps));
             Task.Run(() => stateStore.UpdateLocationState(newState.Realm, newState.Group, newState.Location, people));
@@ -38,6 +39,7 @@ namespace HomeControl.Cloud.Managers
 
         public async Task Feed(UpdatePersonState newPersonState)
         {
+            log.DebugFormat("got person state {0}", newPersonState == null ? "null" : newPersonState.ToString());
             if (newPersonState == null) throw new ArgumentNullException("newPersonState");
             Task.Run(() => stateStore.UpdatePersonState(newPersonState.Realm, newPersonState.Group, newPersonState.Location, CreatePerson(newPersonState.MemberState)));
         }

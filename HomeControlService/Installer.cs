@@ -19,6 +19,7 @@ namespace HomeControl.Local
         {
             container.Register(
                 Component.For<IHomeController>().ImplementedBy<HomeController>(),
+                Component.For<IStateReportersFactory>().ImplementedBy<StateReportersFactory>(),
                 Component.For<IResidentsRepository>().UsingFactoryMethod( (c) => new LocalFileResidentsRepository(
                     Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), ConfigurationManager.AppSettings["connectionString"])
                     ))

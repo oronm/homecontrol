@@ -25,3 +25,4 @@ D:\Dev\HomeControl\HomeControl.Cloud.FeedManager\bin\Castle.Windsor.xml
 D:\Dev\HomeControl\HomeControl.Cloud.FeedManager\bin\Castle.Core.xml
 D:\Dev\HomeControl\HomeControl.Cloud.FeedManager\bin\log4net.dll
 D:\Dev\HomeControl\HomeControl.Cloud.FeedManager\bin\log4net.xml
+D:\Dev\HomeControl\HomeControl.Cloud.FeedManager\bin\log4net.config

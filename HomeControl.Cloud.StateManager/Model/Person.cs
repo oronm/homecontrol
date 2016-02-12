@@ -13,11 +13,16 @@ namespace HomeControl.Cloud.Model
         public DateTime LastLeft;
         public bool IsPresent;
 
+        public override string ToString()
+        {
+            return string.Concat(Name, ",", LastSeen, ",", LastLeft, ",", IsPresent);
+        }
+
         public Person(string name)
         {
             this.Name = name;
-            LastSeen = DateTime.UtcNow.AddYears(-100);
-            LastLeft = DateTime.UtcNow.AddYears(-100);
+            LastSeen = DateTime.MinValue.ToUniversalTime();
+            LastLeft = DateTime.MinValue.ToUniversalTime();
             IsPresent = false;
         }
 

@@ -22,3 +22,5 @@ D:\Dev\HomeControl\HomeControlService\bin\Debug\WifiDeviceSensor.pdb
 D:\Dev\HomeControl\HomeControlService\bin\Debug\Helpers.pdb
 D:\Dev\HomeControl\HomeControlService\bin\Debug\Newtonsoft.Json.xml
 D:\Dev\HomeControl\HomeControlService\bin\Debug\data\IdentifyingDevices.json
+D:\Dev\HomeControl\HomeControlService\bin\Debug\System.Net.Http.Formatting.dll
+D:\Dev\HomeControl\HomeControlService\bin\Debug\System.Net.Http.Formatting.xml

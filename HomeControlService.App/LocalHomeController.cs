@@ -22,6 +22,7 @@ namespace HomeControl.Local.App
             this.homeController = homeController;
             this.homeController.OnPersonArrived += homeController_OnPersonArrived;
             this.homeController.OnPersonLeft += homeController_OnPersonLeft;
+            this.homeController.Start();
         }
 
         private void homeController_OnPersonLeft(object sender, PersonPresenceChangedEventArgs e)

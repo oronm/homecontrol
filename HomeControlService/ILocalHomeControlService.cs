@@ -10,6 +10,9 @@ namespace HomeControl.Local.Contracts
         event EventHandler<PersonPresenceChangedEventArgs> OnPersonArrived;
         event EventHandler<PersonPresenceChangedEventArgs> OnPersonLeft;
 
+        void Start();
+        bool Stop();
+
         IEnumerable<PersonState> GetState();
     }
 }

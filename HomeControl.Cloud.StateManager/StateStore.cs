@@ -57,7 +57,7 @@ namespace HomeControl.Cloud.Managers
                             new Person("Oron")                        
                         })})})};
         }
-        
+
         public void UpdateLocationState(string Realm, string Group, string Location, IEnumerable<Model.Person> people)
         {
             foreach (var person in people)
@@ -70,35 +70,43 @@ namespace HomeControl.Cloud.Managers
         {
             Person personInState;
             var key = new IndexKey(Realm, Group, Location, person.Name);
-            key = peopleIndex.Keys.First(k => k.Person == "Oron");
-            log.InfoFormat("updateperssta {0}", key);
-            log.InfoFormat("updateperssta index {0}", peopleIndex.Count);
+            key = peopleIndex.Keys.First(k => k.Person == person.Name);
+            log.DebugFormat("updateperssta {0}", key);
+            log.DebugFormat("updateperssta index {0}", peopleIndex.Count);
             if (peopleIndex.TryGetValue(key, out personInState))
             {
-                log.InfoFormat("updateperssta person old {0}", personInState.Name);
-                personInState.LastLeft = person.LastLeft;
-                personInState.LastSeen = person.LastSeen;
-                personInState.IsPresent = person.IsPresent;
+                if (personInState.LastLeft > person.LastLeft ||
+                    personInState.LastSeen > person.LastSeen)
+                {
+                    log.WarnFormat("Received old information about {0} with {1}", personInState, person);
+                }
+                else
+                {
+                    log.DebugFormat("updateperssta person old {0}", personInState.Name);
+                    personInState.LastLeft = person.LastLeft;
+                    personInState.LastSeen = person.LastSeen;
+                    personInState.IsPresent = person.IsPresent;
+                }
             }
         }
 
 
         public IEnumerable<Person> GetLocationState(string Realm, string Group, string Location)
         {
-            log.Info("getlocstatest");
+            log.Debug("getlocstatest");
             var realm = realms.SingleOrDefault(rlm => rlm.RealmName == Realm);
-            log.InfoFormat("realm {0} {1} {2}", Realm, realms.First().RealmName, realm.RealmName);
+            log.DebugFormat("realm {0} {1} {2}", Realm, realms.First().RealmName, realm.RealmName);
             if (realm == null) return null;
 
             var group = realm.groups.SingleOrDefault(grp => grp.GroupName == Group);
-            log.InfoFormat("gr {0} {1} {2}", Group, realm.groups.First().GroupName, group.GroupName);
+            log.DebugFormat("gr {0} {1} {2}", Group, realm.groups.First().GroupName, group.GroupName);
             if (group == null) return null;
 
             var loc = group.Locations.SingleOrDefault(lc => lc.LocationName == Location);
-            log.InfoFormat("loc {0} {1} {2}", Location, group.Locations.First().LocationName, loc.LocationName);
+            log.DebugFormat("loc {0} {1} {2}", Location, group.Locations.First().LocationName, loc.LocationName);
             if (loc == null) return null;
 
-            log.InfoFormat("locpeople {0} {1}", loc.People.Count(), loc.People.First().Name);
+            log.DebugFormat("locpeople {0} {1}", loc.People.Count(), loc.People.First().Name);
             return loc.People.ToArray();
         }
     }

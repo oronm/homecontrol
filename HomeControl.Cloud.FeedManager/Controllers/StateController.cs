@@ -13,12 +13,14 @@ using System.ServiceModel;
 using System.ServiceModel.Description;
 using System.ServiceModel.Web;
 using System.Configuration;
+using log4net;
 
 namespace HomeControl.Cloud.FeedManager.Controllers
 {
     public class StateController : ApiController
     {
         private IStateFeed stateFeed;
+        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         // TODO : Convert StateController to work with DI
         public StateController()
@@ -37,11 +39,18 @@ namespace HomeControl.Cloud.FeedManager.Controllers
         }
         private bool validateState(PersonState state)
         {
-            return state != null &&
+            var valid = state != null &&
                 !string.IsNullOrWhiteSpace(state.name) &&
                 state.lastLeft < DateTime.UtcNow && state.lastSeen < DateTime.UtcNow &&
                 ((state.IsPresent && state.lastLeft < state.lastSeen) ||
                 (!state.IsPresent && state.lastLeft > state.lastSeen));
+
+            if (valid)
+            {
+                state.lastLeft = state.lastLeft.ToUniversalTime();
+                state.lastSeen = state.lastSeen.ToUniversalTime();
+            }
+            return valid;
         }
         private bool validateState(IEnumerable<PersonState> state)
         {
@@ -65,11 +74,13 @@ namespace HomeControl.Cloud.FeedManager.Controllers
                 MembersState = value
             };
 
-            await Task.Run(() => stateFeed.Feed(feed));
+            await Task.Run(() => { log.DebugFormat("Feeding location state {0}", feed); stateFeed.Feed(feed); });
             return Ok();
         }
 
         // PUT: api/State/5
+        [IdentityBasicAuthentication]
+        [Authorize]
         public async Task<IHttpActionResult> Put(string name, [FromBody]PersonState value)
         {
             var identity = this.GetFeederIdentity();
@@ -84,7 +95,7 @@ namespace HomeControl.Cloud.FeedManager.Controllers
                 MemberState = value
             };
 
-            await Task.Run(() => stateFeed.Feed(feed));
+            await Task.Run(() => { log.DebugFormat("Feeding person state {0}", feed); stateFeed.Feed(feed); });
             return Ok();
         }
     }
