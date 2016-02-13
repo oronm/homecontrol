@@ -55,17 +55,17 @@ namespace HomeControl.Cloud.Managers
 
         public IEnumerable<PersonState> GetLocationState(string Realm, string Group, string Location)
         {
-            log.Info("getlocstate");
+            log.Debug("getlocstate");
             var people = stateStore.GetLocationState(Realm, Group, Location);
-            log.InfoFormat("getlocstate people {0}", people == null ? "null" : people.Count().ToString());
+            log.DebugFormat("getlocstate people {0}", people == null ? "null" : people.Count().ToString());
             IEnumerable<PersonState> result = null;
             if (people != null)
             {
                 result = people.Select(person => CreatePersonState(person));
-                log.InfoFormat("getlocstate result {0}", result == null ? "null" : result.Count().ToString());
+                log.DebugFormat("getlocstate result {0}", result == null ? "null" : result.Count().ToString());
                 foreach (var person in people)
                 {
-                    log.InfoFormat("person {0} {1} {2} {3}", person.Name, person.LastSeen.ToShortDateString(), person.LastLeft.ToShortDateString(), person.IsPresent);
+                    log.DebugFormat("person {0} {1} {2} {3}", person.Name, person.LastSeen.ToShortDateString(), person.LastLeft.ToShortDateString(), person.IsPresent);
                 }
             }
             return result;
