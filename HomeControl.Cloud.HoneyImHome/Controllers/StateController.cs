@@ -51,8 +51,16 @@ namespace HomeControl.Cloud.HoneyImHome.Controllers
                 Location = "Home"
             };
          
-            log.DebugFormat("Getting state"); 
-            var res = stateReport.GetLocationState(id.Realm, id.Group, id.Location);
+            log.DebugFormat("Getting state");
+            IEnumerable<PersonState> res = null;
+            try
+            {
+                res = stateReport.GetLocationState(id.Realm, id.Group, id.Location);
+            }
+            catch (Exception e)
+            {
+                res = new PersonState[] {};
+            }
             return res;
         }
     }

@@ -23,7 +23,7 @@ export class Users {
     startRefresh(): void {
         setInterval(() => {
             this.refreshResidents();
-        }, 5000);
+        }, 60000);
         //setInterval(this.refreshResidents, 5000);
     }
 
@@ -32,6 +32,7 @@ export class Users {
         //this.residents.push({ name: "ER" });
         this.http.fetch('State')
             .then(response => response.json())
-            .then(State => this.residents = State);
+            .then(State => this.residents = State)
+        .catch(error => this.residents = []);
     }
 }
