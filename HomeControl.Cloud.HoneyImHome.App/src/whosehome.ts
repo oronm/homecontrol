@@ -4,7 +4,7 @@ import 'fetch';
 
 @autoinject
 export class Users {
-    heading: string = 'Whos\'e Home';
+    heading: string = 'Whos\e Home?';
     residents: any[] = [];
 
     constructor(private http: HttpClient) {
