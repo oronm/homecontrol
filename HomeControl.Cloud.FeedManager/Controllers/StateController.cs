@@ -41,14 +41,18 @@ namespace HomeControl.Cloud.FeedManager.Controllers
         {
             var valid = state != null &&
                 !string.IsNullOrWhiteSpace(state.name) &&
-                state.lastLeft < DateTime.UtcNow && state.lastSeen < DateTime.UtcNow &&
+                state.lastLeft.ToUniversalTime() < DateTime.UtcNow && state.lastSeen.ToUniversalTime() < DateTime.UtcNow &&
                 ((state.IsPresent && state.lastLeft < state.lastSeen) ||
-                (!state.IsPresent && state.lastLeft > state.lastSeen));
+                (!state.IsPresent && (state.lastLeft > state.lastSeen || (state.lastLeft == state.lastSeen && state.lastSeen == DateTime.MinValue.ToUniversalTime()))));
 
             if (valid)
             {
                 state.lastLeft = state.lastLeft.ToUniversalTime();
                 state.lastSeen = state.lastSeen.ToUniversalTime();
+            }
+            else
+            {
+                log.DebugFormat("Invalid state for {0}", state);
             }
             return valid;
         }
@@ -62,9 +66,13 @@ namespace HomeControl.Cloud.FeedManager.Controllers
         // POST: api/State
         public async Task<IHttpActionResult> Post([FromBody]IEnumerable<PersonState> value)
         {
+            //log.Debug("rec post");
             var identity = this.GetFeederIdentity();
+            //log.Debug("rec post iden");
             if (!validateIdentity(identity)) return Unauthorized();
+            //log.Debug("rec post auth");
             if (!validateState(value)) return BadRequest();
+            //log.Debug("rec post valid");
 
             var feed = new UpdateLocationState()
             {

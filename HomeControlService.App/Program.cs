@@ -10,10 +10,9 @@ using log4net;
 
 namespace HomeControl.Local.App
 {
-    // TODO: Separate the srv to be system service and not user app
-    // TODO: Web server the holds the state
-    // TODO: Web app that shows the state
-
+    // TODO : Add authentication for honeyimhome
+    // TODO : Add device information 
+    // TODO : Add history
     static class Program
     {
         /// <summary>

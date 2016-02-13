@@ -25,6 +25,11 @@ namespace HomeControl.Cloud.Contracts.Models
             this.lastLeft = lastLeft;
             this.IsPresent = isPresent;
         }
+
+        public override string ToString()
+        {
+            return string.Concat(name, ",", lastSeen, ",", lastLeft, ",", IsPresent);
+        }
     }
 
     [DataContract]
