@@ -33,6 +33,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeControl.Cloud.ManagersB
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeControl.Cloud.HoneyImHome", "HomeControl.Cloud.HoneyImHome\HomeControl.Cloud.HoneyImHome.csproj", "{C5E57BF3-9DCC-4981-B148-E4E786E67609}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeControl.Cloud.ManagersWcfHost", "HomeControl.Cloud.ManagersWcfHost\HomeControl.Cloud.ManagersWcfHost.csproj", "{5EB206F2-D283-4242-B026-91412830DC85}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -145,6 +147,14 @@ Global
 		{C5E57BF3-9DCC-4981-B148-E4E786E67609}.DeployService|Any CPU.Build.0 = Debug|Any CPU
 		{C5E57BF3-9DCC-4981-B148-E4E786E67609}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C5E57BF3-9DCC-4981-B148-E4E786E67609}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5EB206F2-D283-4242-B026-91412830DC85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5EB206F2-D283-4242-B026-91412830DC85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5EB206F2-D283-4242-B026-91412830DC85}.DeployAzure|Any CPU.ActiveCfg = Debug|Any CPU
+		{5EB206F2-D283-4242-B026-91412830DC85}.DeployAzure|Any CPU.Build.0 = Debug|Any CPU
+		{5EB206F2-D283-4242-B026-91412830DC85}.DeployService|Any CPU.ActiveCfg = Debug|Any CPU
+		{5EB206F2-D283-4242-B026-91412830DC85}.DeployService|Any CPU.Build.0 = Debug|Any CPU
+		{5EB206F2-D283-4242-B026-91412830DC85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5EB206F2-D283-4242-B026-91412830DC85}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -162,5 +172,6 @@ Global
 		{B2296300-3C83-47EE-A125-5B4A918E62C6} = {D5AB0813-6BD1-4055-9EDA-BE775AA6FBAC}
 		{BD130346-4999-44E4-9B87-BAE36E226387} = {D5AB0813-6BD1-4055-9EDA-BE775AA6FBAC}
 		{C5E57BF3-9DCC-4981-B148-E4E786E67609} = {D5AB0813-6BD1-4055-9EDA-BE775AA6FBAC}
+		{5EB206F2-D283-4242-B026-91412830DC85} = {D5AB0813-6BD1-4055-9EDA-BE775AA6FBAC}
 	EndGlobalSection
 EndGlobal
