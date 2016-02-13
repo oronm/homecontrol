@@ -1,0 +1,14 @@
+D:\Dev\HomeControl\WifiPersonIdentifier\bin\DeployAzure\WifiDeviceSensor.dll
+D:\Dev\HomeControl\WifiPersonIdentifier\bin\DeployAzure\WifiDeviceSensor.pdb
+D:\Dev\HomeControl\WifiPersonIdentifier\bin\DeployAzure\Castle.Core.dll
+D:\Dev\HomeControl\WifiPersonIdentifier\bin\DeployAzure\Castle.Windsor.dll
+D:\Dev\HomeControl\WifiPersonIdentifier\bin\DeployAzure\HomeControl.Detection.dll
+D:\Dev\HomeControl\WifiPersonIdentifier\bin\DeployAzure\log4net.dll
+D:\Dev\HomeControl\WifiPersonIdentifier\bin\DeployAzure\Helpers.dll
+D:\Dev\HomeControl\WifiPersonIdentifier\bin\DeployAzure\Castle.Core.xml
+D:\Dev\HomeControl\WifiPersonIdentifier\bin\DeployAzure\Castle.Windsor.xml
+D:\Dev\HomeControl\WifiPersonIdentifier\bin\DeployAzure\log4net.xml
+D:\Dev\HomeControl\WifiPersonIdentifier\bin\DeployAzure\Helpers.pdb
+D:\Dev\HomeControl\WifiPersonIdentifier\obj\DeployAzure\WifiDeviceSensor.csprojResolveAssemblyReference.cache
+D:\Dev\HomeControl\WifiPersonIdentifier\obj\DeployAzure\WifiDeviceSensor.dll
+D:\Dev\HomeControl\WifiPersonIdentifier\obj\DeployAzure\WifiDeviceSensor.pdb

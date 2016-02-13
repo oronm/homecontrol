@@ -70,7 +70,7 @@ div.au-stagger {
 }
 
 .card-container.au-enter {
-  opacity: 0 !important;
+  opacity: 0;
 }
 
 .card-container.au-enter-active {
@@ -89,12 +89,6 @@ div.au-stagger {
   color: rgb(136, 172, 217);
   margin-bottom: 32px;
   box-shadow: 0 0 5px rgba(0, 0, 0, .5);
-}
-
-.card.notpresent
-{
-  background-color: #CCC;
-  color: #ffffff;
 }
 
 .card .content {

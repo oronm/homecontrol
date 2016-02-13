@@ -1,0 +1,4 @@
+D:\Dev\HomeControl\HomeControl.Cloud.Contracts\bin\Release\HomeControl.Cloud.Contracts.dll
+D:\Dev\HomeControl\HomeControl.Cloud.Contracts\bin\Release\HomeControl.Cloud.Contracts.pdb
+D:\Dev\HomeControl\HomeControl.Cloud.Contracts\obj\Release\HomeControl.Cloud.Contracts.dll
+D:\Dev\HomeControl\HomeControl.Cloud.Contracts\obj\Release\HomeControl.Cloud.Contracts.pdb

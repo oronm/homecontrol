@@ -1,0 +1,13 @@
+D:\Dev\HomeControl\HomeControl.Cloud.StateManager\bin\Release\HomeControl.Cloud.StateManager.dll
+D:\Dev\HomeControl\HomeControl.Cloud.StateManager\bin\Release\HomeControl.Cloud.StateManager.pdb
+D:\Dev\HomeControl\HomeControl.Cloud.StateManager\bin\Release\Castle.Core.dll
+D:\Dev\HomeControl\HomeControl.Cloud.StateManager\bin\Release\Castle.Windsor.dll
+D:\Dev\HomeControl\HomeControl.Cloud.StateManager\bin\Release\HomeControl.Cloud.Contracts.dll
+D:\Dev\HomeControl\HomeControl.Cloud.StateManager\bin\Release\log4net.dll
+D:\Dev\HomeControl\HomeControl.Cloud.StateManager\bin\Release\HomeControl.Cloud.Contracts.pdb
+D:\Dev\HomeControl\HomeControl.Cloud.StateManager\bin\Release\Castle.Core.xml
+D:\Dev\HomeControl\HomeControl.Cloud.StateManager\bin\Release\Castle.Windsor.xml
+D:\Dev\HomeControl\HomeControl.Cloud.StateManager\bin\Release\log4net.xml
+D:\Dev\HomeControl\HomeControl.Cloud.StateManager\obj\Release\HomeControl.Cloud.StateManager.csprojResolveAssemblyReference.cache
+D:\Dev\HomeControl\HomeControl.Cloud.StateManager\obj\Release\HomeControl.Cloud.StateManager.dll
+D:\Dev\HomeControl\HomeControl.Cloud.StateManager\obj\Release\HomeControl.Cloud.StateManager.pdb

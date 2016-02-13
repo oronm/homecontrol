@@ -17,7 +17,6 @@ using System.Web.Http.Cors;
 
 namespace HomeControl.Cloud.HoneyImHome.Controllers
 {
-    [EnableCors(origins: "http://localhost:60392", headers: "*", methods: "*")]
     public class StateController : ApiController
     {
         private  IStateReport stateReport;

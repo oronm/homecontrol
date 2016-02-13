@@ -13,6 +13,7 @@ namespace HomeControl.Local.App
     // TODO : Add authentication for honeyimhome
     // TODO : Add device information 
     // TODO : Add history
+    // TODO : Add cache to hih controller
     static class Program
     {
         /// <summary>

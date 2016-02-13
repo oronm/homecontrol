@@ -11,7 +11,7 @@ export class Users {
         http.configure(config => {
             config
                 .useStandardConfiguration()
-                .withBaseUrl('http://localhost:60756/api/');
+                .withBaseUrl('http://homecontrol-cloud-honeyimhome.azurewebsites.net/api/');
         });
     }
 
