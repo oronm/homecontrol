@@ -1,4 +1,6 @@
 <template>
+    <require from="./date-format"></require>
+
     <section>
         <h2>${heading}</h2>
         <div class="row au-stagger">
@@ -10,8 +12,8 @@
                     </div>
                     <div class="content">
                         <p class="name">${resident.name}</p>
-                        <p>Last Seen: ${resident.lastSeen}</p>
-                        <p>Last Left: ${resident.lastLeft}</p>
+                        <p>Last Seen: ${resident.lastSeen  | dateFormat}</p>
+                        <p>Last Left: ${resident.lastLeft | dateFormat}</p>
                     </div>
                 </div>
             </div>

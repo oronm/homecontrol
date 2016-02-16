@@ -39,6 +39,12 @@ gulp.task('build-css', function() {
     .pipe(gulp.dest(paths.output));
 });
 
+// copies changed css files to the output directory
+gulp.task('build-css', function () {
+    return gulp.src(paths.js)
+      .pipe(changed(paths.output, { extension: '.js' }))
+      .pipe(gulp.dest(paths.output));
+});
 // this task calls the clean task (located
 // in ./clean.js), then runs the build-system
 // and build-html tasks in parallel

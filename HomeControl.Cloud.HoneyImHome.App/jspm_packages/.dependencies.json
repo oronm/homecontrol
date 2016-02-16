@@ -181,5 +181,8 @@
   "npm:babel-runtime@5.8.35": {
     "process": "github:jspm/nodelibs-process@^0.1.0"
   },
-  "npm:babel-core@5.8.35": {}
+  "npm:babel-core@5.8.35": {},
+  "npm:moment@2.11.2": {
+    "process": "github:jspm/nodelibs-process@^0.1.0"
+  }
 }
