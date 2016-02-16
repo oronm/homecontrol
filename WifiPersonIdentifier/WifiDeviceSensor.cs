@@ -75,7 +75,7 @@ namespace WifiDeviceIdentifier
             request.Headers[HttpRequestHeader.Authorization] = "Basic c2xpbTpzbGltZXIx";
             request.Referer = "http://192.168.0.1/userRpm/WlanStationRpm_5g.htm";
 
-            request.Credentials = new NetworkCredential("slim", "slimer1");
+            request.Credentials = new NetworkCredential("admin", "admin");
             string html = string.Empty;
             try
             {
