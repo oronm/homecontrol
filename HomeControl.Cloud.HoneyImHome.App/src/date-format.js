@@ -10,7 +10,7 @@ export class DateFormatValueConverter {
         return moment(value).format(format);
     }
     toView(value) {
-        var format = "D/M HH:MM"; 
+        var format = "D/M HH:mm"; 
         return moment(value).format(format);
     }
 }
