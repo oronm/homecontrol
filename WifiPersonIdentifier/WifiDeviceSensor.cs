@@ -11,6 +11,8 @@ using log4net;
 
 namespace WifiDeviceIdentifier
 {
+    // TODO : wifidevice - Rename sensor to convetion + Add another level for tplink wifi sensor
+    // TODO : wifidevice - use configuration instead of hard coded
     public class WifiDeviceSensor : AbstractTimedSensor, ISensor
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);

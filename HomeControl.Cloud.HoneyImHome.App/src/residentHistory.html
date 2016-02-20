@@ -1,0 +1,24 @@
+<template>
+    <require from="./date-format"></require>
+
+    <section>
+        <!--<h4>${name}</h4>-->
+        <div class="row au-stagger">
+            <div class="col-sm-6 col-md-3 col-lg-3 col-xs-6" repeat.for="historyRecord of history">
+                <div class="">
+                    <!--<canvas class="header-bg" width="100" height="70"></canvas>-->
+                    <!--<div class="avatar">
+                    </div>-->
+                    <div class="">
+                        <span class="">${historyRecord.recordDate | dateFormat:'D/M HH:mm'}</span>
+                        <span>${historyRecord.wasPresent ? "Left" : "Arrived"}</span>
+                        <span>at ${ actionDate(historyRecord) | dateFormat:'HH:mm' }</span>
+                        <span><!--at ${historyRecord.wasPresent ? historyRecord.lastSeen | dateFormat:'D/M HH:mm:ss' : historyRecord.lastLeft | dateFormat:'D/M HH:mm:ss'}--></span>
+                        <span>S/${historyRecord.lastSeen  | dateFormat:'HH:mm'}</span>
+                        <span>L/${historyRecord.lastLeft | dateFormat:'HH:mm'}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</template>

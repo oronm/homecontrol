@@ -62,5 +62,34 @@ namespace HomeControl.Cloud.HoneyImHome.Controllers
             }
             return res;
         }
+
+        [Route("api/State/{name}/History")]
+        public async Task<PersonStateHistory> GetHistory(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                return null;
+            }
+
+            var id = new
+            {
+                Realm = "Default",
+                Group = "Morad",
+                Location = "Home"
+            };
+
+            PersonStateHistory history;
+            try
+            {
+                history = stateReport.GetPersonHistory(id.Realm, id.Group, id.Location, name);
+            }
+            catch (Exception e)
+            {
+                log.Error(string.Format("Error getting history for {0}", name), e);
+                history = new PersonStateHistory() { name = name, history = new PersonStateHistoryRecord[] { } };
+            }
+
+            return history;
+        }
     }
 }

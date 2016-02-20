@@ -7,10 +7,12 @@ import moment from 'moment';
 //}
 export class DateFormatValueConverter {
     toView(value,format) {
+        if (!format)
+            format = "D/M HH:mm"; 
         return moment(value).format(format);
     }
-    toView(value) {
-        var format = "D/M HH:mm"; 
-        return moment(value).format(format);
-    }
+    //toView(value) {
+    //    var format = "D/M HH:mm"; 
+    //    return moment(value).format(format);
+    //}
 }

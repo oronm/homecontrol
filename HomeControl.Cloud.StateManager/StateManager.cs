@@ -70,5 +70,20 @@ namespace HomeControl.Cloud.Managers
             }
             return result;
         }
+
+
+        public PersonStateHistory GetPersonHistory(string Realm, string Group, string Location, string Name)
+        {
+            var history = stateStore.GetPersonStateHistory(Realm, Group, Location, Name);
+            return new PersonStateHistory() { 
+                name = Name,
+                history = history.Select(ph => new PersonStateHistoryRecord() { 
+                    recordDate = ph.RecordDateUTC,
+                    lastLeft = ph.LastLeft,
+                    lastSeen = ph.LastSeen,
+                    wasPresent = ph.IsPresent
+                })
+            };
+        }
     }
 }

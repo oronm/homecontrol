@@ -1,11 +1,12 @@
 <template>
     <require from="./date-format"></require>
+    <require from="./residentHistory"></require>
 
     <section>
         <h2>${heading}</h2>
         <div class="row au-stagger">
             <div class="col-sm-6 col-md-3 col-lg-3 col-xs-6 card-container" repeat.for="resident of residents">
-                <div class="card ${resident.IsPresent ? '' : 'notpresent'}">
+                <div class="card ${resident.IsPresent ? '' : 'notpresent'}" click.delegate="toggleHistory(resident.name)">
                     <canvas class="header-bg" width="100" height="70"></canvas>
                     <div class="avatar">
                         <!--<img src.bind="user.avatar_url" crossorigin />-->
@@ -19,4 +20,10 @@
             </div>
         </div>
     </section>
+
+    <div class="${selectedResident == '' ? 'invisible' : ''}">
+        <!--<div>-->
+        <!--<p>History</p>-->
+        <compose view-model="residentHistory"></compose>
+    </div>
 </template>

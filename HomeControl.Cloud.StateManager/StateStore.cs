@@ -13,8 +13,12 @@ namespace HomeControl.Cloud.Managers
     public class StateStore : IStateStore
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private const int MAX_HISTORY = 10;
+
         IEnumerable<Realm> realms;
         ConcurrentDictionary<IndexKey, Person> peopleIndex;
+        ConcurrentDictionary<IndexKey, ConcurrentQueue<PersonHistory>> peopleHistory;
+
 
         public StateStore()
         {
@@ -39,6 +43,10 @@ namespace HomeControl.Cloud.Managers
             this.peopleIndex = new ConcurrentDictionary<IndexKey,Person>(flat.ToDictionary(
                 (realmKey) => realmKey.Item1, 
                 (realmValue) => realmValue.Item2));
+
+            this.peopleHistory = new ConcurrentDictionary<IndexKey,ConcurrentQueue<PersonHistory>> (peopleIndex.Select((kvp,index) => 
+                new KeyValuePair<IndexKey,ConcurrentQueue<PersonHistory>>(kvp.Key, new ConcurrentQueue<PersonHistory>())));
+
             log.InfoFormat("index {0}", peopleIndex.Count());
             foreach (var item in peopleIndex)
             {
@@ -66,14 +74,19 @@ namespace HomeControl.Cloud.Managers
             }
         }
 
-        public void UpdatePersonState(string Realm, string Group, string Location, Model.Person person)
+        public void UpdatePersonState(string Realm, string Group, string Location, Person person)
         {
             Person personInState;
             var key = new IndexKey(Realm, Group, Location, person.Name);
-            key = peopleIndex.Keys.First(k => k.Person == person.Name);
             log.DebugFormat("updateperssta {0}", key);
             log.DebugFormat("updateperssta index {0}", peopleIndex.Count);
-            if (peopleIndex.TryGetValue(key, out personInState))
+            
+            key = peopleIndex.Keys.FirstOrDefault(k => k.ToString() == key.ToString());
+            if (key == null || !peopleIndex.TryGetValue(key, out personInState))
+            {
+                log.WarnFormat("Couldnt find key {0}", key == null ? "null" : key.ToString());
+            }
+            else
             {
                 if (personInState.LastLeft > person.LastLeft ||
                     personInState.LastSeen > person.LastSeen)
@@ -82,10 +95,46 @@ namespace HomeControl.Cloud.Managers
                 }
                 else
                 {
+                    log.DebugFormat("cloning  {0}", personInState.Name);
+                    var oldPersonInState = personInState.Clone();
                     log.DebugFormat("updateperssta person old {0}", personInState.Name);
                     personInState.LastLeft = person.LastLeft;
                     personInState.LastSeen = person.LastSeen;
                     personInState.IsPresent = person.IsPresent;
+
+                    if (oldPersonInState.IsPresent != person.IsPresent &&
+                        (oldPersonInState.LastLeft != DateTime.MinValue.ToUniversalTime() && oldPersonInState.LastSeen != DateTime.MinValue.ToUniversalTime()))
+                    {
+                        addHistoryRecord(key, oldPersonInState);
+                    }
+                    else
+                    {
+                        log.DebugFormat("update doesnt qualify history {0} {1} {2} {3}", oldPersonInState.IsPresent, person.IsPresent, oldPersonInState.LastLeft, oldPersonInState.LastSeen);
+                    }
+                }
+            }
+        }
+
+        private void addHistoryRecord(IndexKey key, Person personForHistory)
+        {
+            ConcurrentQueue<PersonHistory> personHistory = null;
+            if (peopleHistory.TryGetValue(key, out personHistory))
+            {
+                var historyRecord = new PersonHistory(DateTime.UtcNow, personForHistory);
+
+                // Cleanup extra items
+                int removals = personHistory.Count - MAX_HISTORY;
+                while (personHistory.Count > MAX_HISTORY && removals > 0)
+                {
+                    removals --;
+                    PersonHistory dummy;
+                    personHistory.TryDequeue(out dummy);
+                }
+
+                // if there is room, add the item
+                if (personHistory.Count < MAX_HISTORY)
+                {
+                    personHistory.Enqueue(historyRecord);
                 }
             }
         }
@@ -108,6 +157,29 @@ namespace HomeControl.Cloud.Managers
 
             log.DebugFormat("locpeople {0} {1}", loc.People.Count(), loc.People.First().Name);
             return loc.People.ToArray();
+        }
+
+
+        public IEnumerable<PersonHistory> GetPersonStateHistory(string Realm, string Group, string Location, string Name)
+        {
+            ConcurrentQueue<PersonHistory> history;
+            var key = new IndexKey(Realm, Group, Location, Name);
+            log.DebugFormat("getpersonstatehistory {0}", key);
+
+            key = peopleHistory.Keys.FirstOrDefault(k => k.ToString() == key.ToString());
+
+            IEnumerable<PersonHistory> result;
+            if (key == null || !peopleHistory.TryGetValue(key, out history))
+            {
+                log.WarnFormat("Couldnt find key {0}", key == null ? "null" : key.ToString());
+                result = new PersonHistory[] { };
+            }
+            else
+            {
+                result = history.Take(MAX_HISTORY).ToArray();
+            }
+
+            return result;
         }
     }
 

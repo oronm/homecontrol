@@ -33,5 +33,10 @@ namespace HomeControl.Cloud.Model
             this.LastLeft = lastLeft;
             this.IsPresent = IsPresent;
         }
+
+        public Person Clone()
+        {
+            return new Person(this.Name) { IsPresent = this.IsPresent, LastLeft = this.LastLeft, LastSeen = this.LastSeen };
+        }
     }
 }

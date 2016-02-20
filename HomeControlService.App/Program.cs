@@ -10,6 +10,7 @@ using log4net;
 
 namespace HomeControl.Local.App
 {
+    // TPDP : fix deployment of all
     // TODO : Add authentication for honeyimhome
     // TODO : Add device information 
     // TODO : Add history

@@ -13,5 +13,8 @@ namespace HomeControl.Cloud.Contracts
     {
         [OperationContract]
         IEnumerable<PersonState> GetLocationState(string Realm, string Group, string Location);
+
+        [OperationContract]
+        PersonStateHistory GetPersonHistory(string Realm, string Group, string Location, string Name);
     }
 }

@@ -33,6 +33,32 @@ namespace HomeControl.Cloud.Contracts.Models
     }
 
     [DataContract]
+    public class PersonStateHistoryRecord
+    {
+        [DataMember]
+        public DateTime recordDate;
+
+        [DataMember]
+        public DateTime lastSeen;
+
+        [DataMember]
+        public DateTime lastLeft;
+
+        [DataMember]
+        public bool wasPresent;
+    }
+
+    [DataContract]
+    public class PersonStateHistory
+    {
+        [DataMember]
+        public string name;
+
+        [DataMember]
+        public IEnumerable<PersonStateHistoryRecord> history;
+    }
+
+    [DataContract]
     public abstract class FeedMessage
     {
         [DataMember]
