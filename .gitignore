@@ -7,4 +7,5 @@ HomeControlService.App/bin/Debug/HomeControlService-Trace.log.6
 node_modules/
 bin/
 obj/
+packages/
 *.force
