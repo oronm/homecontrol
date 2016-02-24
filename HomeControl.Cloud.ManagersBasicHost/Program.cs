@@ -31,6 +31,9 @@ namespace HomeControl.Cloud.ManagersBasicHost
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         static void Main(string[] args)
         {
+            log.Debug("Debug Message..");
+            log.Warn("Warning Message..");
+            log.Error("Error Message..");
             log.Info("Starting..");
             runService();
             Console.ReadLine();

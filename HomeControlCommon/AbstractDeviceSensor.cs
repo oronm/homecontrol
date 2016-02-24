@@ -95,10 +95,10 @@ namespace HomeControl.Detection
             log.Info("Started detection timer");
             cancellationTokenSource = Helper.StartRepetativeTask(() =>
                 {
-                    log.Info("Probing");
+                    log.Debug("Probing");
                     StartProbeNow();
 
-                }, TimeSpan.FromSeconds(60));
+                }, TimeSpan.FromSeconds(30));
         }
 
         protected override bool IsStarted

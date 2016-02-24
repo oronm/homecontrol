@@ -109,7 +109,7 @@ namespace HomeControl.Cloud.Managers
                     }
                     else
                     {
-                        log.DebugFormat("update doesnt qualify history {0} {1} {2} {3}", oldPersonInState.IsPresent, person.IsPresent, oldPersonInState.LastLeft, oldPersonInState.LastSeen);
+                        log.WarnFormat("update doesnt qualify history {0} {1} {2} {3}", oldPersonInState.IsPresent, person.IsPresent, oldPersonInState.LastLeft, oldPersonInState.LastSeen);
                     }
                 }
             }

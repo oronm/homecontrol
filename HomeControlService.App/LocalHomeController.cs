@@ -86,7 +86,7 @@ namespace HomeControl.Local.App
             IEnumerable<PersonState> state = this.homeController.GetState();
             log.Info("galia is home!");
             PersonState oronState = state.SingleOrDefault(st => st.name == "Oron");
-            if (oronState == null || !oronState.IsPresent)
+            //if (oronState == null || !oronState.IsPresent)
             {
                 Helper.StartProcess(@"E:\Programs\GaliaIsHome.bat");
             }

@@ -17,8 +17,8 @@ namespace HomeControl.PresenceManager
     public class PersonPresencePolicy
     {
         //private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        //public TimeSpan MaximumAllowedDisconnection = TimeSpan.FromSeconds(19);
-        public TimeSpan MaximumAbsencyAllowed = TimeSpan.FromMinutes(5);
+        //public TimeSpan MaximumAbsencyAllowed = TimeSpan.FromSeconds(10);
+        public TimeSpan MaximumAbsencyAllowed = TimeSpan.FromMinutes(2);
 
         //private CancellationTokenSource presenceTimeoutCancellation;
 
