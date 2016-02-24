@@ -5,4 +5,6 @@ HomeControlService.App/bin/Debug/HomeControlService-Trace.log.4
 HomeControlService.App/bin/Debug/HomeControlService-Trace.log.5
 HomeControlService.App/bin/Debug/HomeControlService-Trace.log.6
 node_modules/
-**/bin/*
+bin/
+obj/
+*.force

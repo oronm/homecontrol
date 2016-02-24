@@ -28,9 +28,14 @@ namespace WifiDeviceIdentifier
 
         private IEnumerable<string> getConnectedMacs()
         {
-            string urlAddress = "http://192.168.0.1/userRpm/WlanStationRpm_5g.htm?Page=1";
-            IEnumerable<string> macs = null;
-            
+            return getConnectedMacs("http://192.168.0.1/userRpm/WlanStationRpm_5g.htm?Page=1").Union(
+             getConnectedMacs("http://192.168.0.1/userRpm/WlanStationRpm.htm?Page=1"));
+        }
+
+        private IEnumerable<string> getConnectedMacs(string urlAddress)
+        {
+            IEnumerable<string> macs = new string[] {};
+
             try
             {
                 var html = getWifiStatsHtmlPage(urlAddress);
@@ -47,7 +52,7 @@ namespace WifiDeviceIdentifier
             {
                 log.Error(string.Format("Error getting wifi stats html page from url {0}", urlAddress), e);
             }
-            
+
             return macs;
         }
 
@@ -77,7 +82,7 @@ namespace WifiDeviceIdentifier
             request.Headers[HttpRequestHeader.Authorization] = "Basic c2xpbTpzbGltZXIx";
             request.Referer = "http://192.168.0.1/userRpm/WlanStationRpm_5g.htm";
 
-            request.Credentials = new NetworkCredential("admin", "admin");
+            request.Credentials = new NetworkCredential("slim", "slimer1");
             string html = string.Empty;
             try
             {
