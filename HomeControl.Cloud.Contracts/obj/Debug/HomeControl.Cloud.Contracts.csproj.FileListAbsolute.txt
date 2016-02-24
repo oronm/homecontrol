@@ -1,5 +1,0 @@
-D:\Dev\HomeControl\HomeControl.Cloud.Contracts\obj\Debug\HomeControl.Cloud.Contracts.csprojResolveAssemblyReference.cache
-D:\Dev\HomeControl\HomeControl.Cloud.Contracts\bin\Debug\HomeControl.Cloud.Contracts.dll
-D:\Dev\HomeControl\HomeControl.Cloud.Contracts\bin\Debug\HomeControl.Cloud.Contracts.pdb
-D:\Dev\HomeControl\HomeControl.Cloud.Contracts\obj\Debug\HomeControl.Cloud.Contracts.dll
-D:\Dev\HomeControl\HomeControl.Cloud.Contracts\obj\Debug\HomeControl.Cloud.Contracts.pdb
