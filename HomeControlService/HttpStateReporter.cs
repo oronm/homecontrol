@@ -30,7 +30,7 @@ namespace HomeControl.Local
             {
                 var authentication = Convert.ToBase64String(
                     System.Text.ASCIIEncoding.ASCII.GetBytes(
-                        string.Format("{0}:{1}", "oron", "oron")));
+                        string.Format("{0}:{1}", "username", "password")));
 
                 client.DefaultRequestHeaders.Authorization =
                     new AuthenticationHeaderValue(AuthenticationTypes.Basic, authentication);
