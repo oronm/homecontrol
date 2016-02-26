@@ -18,7 +18,7 @@ namespace HomeControl.PresenceManager
     {
         private IDictionary<Type, ISensor> sensors;
 
-        public SingletonsSensorFactory(WifiDeviceSensor wifiDeviceIdentifier)
+        public SingletonsSensorFactory(MACsSensor wifiDeviceIdentifier)
         {
             sensors = new Dictionary<Type, ISensor>() {
                 { typeof(WifiDeviceDetails), wifiDeviceIdentifier }

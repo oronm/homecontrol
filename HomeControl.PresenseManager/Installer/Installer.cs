@@ -17,7 +17,7 @@ namespace HomeControl.PresenceManager.Installer
         public void Install(IWindsorContainer container, IConfigurationStore store)
         {
             container.Register(
-                Component.For<WifiDeviceSensor>().LifeStyle.Singleton,
+                Component.For<MACsSensor>().LifeStyle.Singleton,
                 Component.For<ISensorFactory>().ImplementedBy<SingletonsSensorFactory>().LifestyleSingleton()
                 );
         }

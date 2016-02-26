@@ -86,9 +86,9 @@
       <Project>{8c0c56cb-9eb5-40ef-8f6e-78f5c3da5c3d}</Project>
       <Name>HomeControl.Detection</Name>
     </ProjectReference>
-    <ProjectReference Include="..\WifiPersonIdentifier\WifiDeviceSensor.csproj">
+    <ProjectReference Include="..\WifiPersonIdentifier\HomeControl.Detection.Network.csproj">
       <Project>{341a4483-d21b-474c-92b9-8f02c2b53c3c}</Project>
-      <Name>WifiDeviceSensor</Name>
+      <Name>HomeControl.Detection.Network</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
