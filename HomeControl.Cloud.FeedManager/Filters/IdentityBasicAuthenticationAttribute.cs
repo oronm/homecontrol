@@ -40,7 +40,18 @@ namespace WebApiBasicAuth.Filters
                 // No user with userName/password exists.
                 return null;
             }
-            FeederControllerExtentionMethods.SetFeederIdentity(new FeederIdentity() { Group = "Morad", Location = "Home", Realm = "Default" });
+            if (token == "oron:oron")
+            {
+                FeederControllerExtentionMethods.SetFeederIdentity(new FeederIdentity() { Group = "Morad", Location = "Home", Realm = "Default" });
+            }
+            else if (token == "yarimi:efes")
+            {
+                FeederControllerExtentionMethods.SetFeederIdentity(new FeederIdentity() { Group = "Yarimi", Location = "Home", Realm = "Default" });
+            }
+            else
+            {
+                return null;
+            }
 
             // Create a ClaimsIdentity with all the claims for this user.
             Claim nameClaim = new Claim(ClaimTypes.Authentication, token);
