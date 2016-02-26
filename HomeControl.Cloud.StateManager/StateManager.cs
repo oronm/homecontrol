@@ -14,12 +14,13 @@ namespace HomeControl.Cloud.Managers
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     public class StateManager : IStateFeed, IStateReport
     {
-        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static ILog log;
         private IStateStore stateStore;
 
         // TODO : Convert StateManager to work with IOC
         public StateManager()
         {
+            StateManager.log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
             log.InfoFormat("st mgr created {0}", DateTime.Now.ToShortTimeString());
             this.stateStore = new StateStore();
         }
@@ -34,14 +35,32 @@ namespace HomeControl.Cloud.Managers
             log.DebugFormat("got location state {0}", newState == null ? "null" : newState.ToString());
             if (newState == null) throw new ArgumentNullException("newState");
             IEnumerable<Person> people = newState.MembersState.Select(ps => CreatePerson(ps));
-            Task.Run(() => stateStore.UpdateLocationState(newState.Realm, newState.Group, newState.Location, people));
+            Task.Run(() => { 
+                try
+                {
+                    stateStore.UpdateLocationState(newState.Realm, newState.Group, newState.Location, people);
+                }
+                catch (Exception e)
+                {
+                    log.Error(string.Format("Error updating state for {0} {1} {2}", newState.Realm, newState.Group, newState.Location), e);
+                }
+            });
         }
 
         public async Task Feed(UpdatePersonState newPersonState)
         {
             log.DebugFormat("got person state {0}", newPersonState == null ? "null" : newPersonState.ToString());
             if (newPersonState == null) throw new ArgumentNullException("newPersonState");
-            Task.Run(() => stateStore.UpdatePersonState(newPersonState.Realm, newPersonState.Group, newPersonState.Location, CreatePerson(newPersonState.MemberState)));
+            Task.Run(() => {
+                try
+                { 
+                    stateStore.UpdatePersonState(newPersonState.Realm, newPersonState.Group, newPersonState.Location, CreatePerson(newPersonState.MemberState));
+                }
+                catch (Exception e)
+                {
+                    log.Error(string.Format("Error updating person state for {0}", newPersonState.MemberState.name), e);
+                }
+            });
         }
 
         private Person CreatePerson(PersonState personState)

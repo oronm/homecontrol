@@ -109,7 +109,11 @@ namespace HomeControl.Cloud.Managers
                     }
                     else
                     {
-                        log.WarnFormat("update doesnt qualify history {0} {1} {2} {3}", oldPersonInState.IsPresent, person.IsPresent, oldPersonInState.LastLeft, oldPersonInState.LastSeen);
+                        string msg = string.Format("update doesnt qualify history {4} {0} {1} {2} {3}", oldPersonInState.IsPresent, person.IsPresent, oldPersonInState.LastLeft, oldPersonInState.LastSeen, oldPersonInState.Name);
+                        if (oldPersonInState.IsPresent == person.IsPresent)
+                            log.Debug(msg);
+                        else
+                            log.WarnFormat(msg);
                     }
                 }
             }
@@ -118,7 +122,11 @@ namespace HomeControl.Cloud.Managers
         private void addHistoryRecord(IndexKey key, Person personForHistory)
         {
             ConcurrentQueue<PersonHistory> personHistory = null;
-            if (peopleHistory.TryGetValue(key, out personHistory))
+            if (!peopleHistory.TryGetValue(key, out personHistory))
+            {
+                log.WarnFormat("Couldnt find person history record {0} {1}", key, personForHistory.Name);
+            }
+            else
             {
                 var historyRecord = new PersonHistory(DateTime.UtcNow, personForHistory);
 
@@ -126,15 +134,23 @@ namespace HomeControl.Cloud.Managers
                 int removals = personHistory.Count - MAX_HISTORY;
                 while (personHistory.Count > MAX_HISTORY && removals > 0)
                 {
+                    log.InfoFormat("Dequeuing {0} {1}", personHistory.Count, removals);
                     removals --;
                     PersonHistory dummy;
-                    personHistory.TryDequeue(out dummy);
+                    if (!personHistory.TryDequeue(out dummy))
+                    {
+                        log.WarnFormat("Couldnt dequeue");
+                    }
                 }
 
                 // if there is room, add the item
                 if (personHistory.Count < MAX_HISTORY)
                 {
                     personHistory.Enqueue(historyRecord);
+                }
+                else
+                {
+                    log.ErrorFormat("Didnt add history reciord for {0}, count={1}", personForHistory.Name, personHistory.Count);
                 }
             }
         }
