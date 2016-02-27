@@ -30,7 +30,7 @@ namespace HomeControl.Cloud.FeedManager.Controllers
             this.stateFeed = fac.CreateChannel();   
         }
         
-        private bool validateIdentity(FeederIdentity identity)
+        private bool validateIdentity(StateIdentity identity)
         {
             return identity != null &&
                 !string.IsNullOrWhiteSpace(identity.Group) &&

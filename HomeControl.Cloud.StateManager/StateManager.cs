@@ -26,6 +26,7 @@ namespace HomeControl.Cloud.Managers
         }
         public StateManager(IStateStore stateStore)
         {
+            StateManager.log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
             log.InfoFormat("st mgr created with store at {0}", DateTime.Now.ToShortTimeString());
             this.stateStore = stateStore;
         }

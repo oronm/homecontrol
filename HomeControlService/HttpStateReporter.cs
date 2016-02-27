@@ -30,7 +30,7 @@ namespace HomeControl.Local
             {
                 var authentication = Convert.ToBase64String(
                     System.Text.ASCIIEncoding.ASCII.GetBytes(
-                        string.Format("{0}:{1}", "username", "password")));
+                        string.Format("{0}:{1}", "oron", "oron")));
 
                 client.DefaultRequestHeaders.Authorization =
                     new AuthenticationHeaderValue(AuthenticationTypes.Basic, authentication);
@@ -41,9 +41,9 @@ namespace HomeControl.Local
 
         public async Task ReportPersonState(Contracts.PersonState personState)
         {
-            Task.Run(() => report((client) => 
-                client.PutAsJsonAsync(string.Concat(endpoint,"/", personState.name,"/"), personState)
-            ));
+            //Task.Run(() => report((client) => 
+            //    client.PutAsJsonAsync(string.Concat(endpoint,"/", personState.name,"/"), personState)
+            //));
         }
         
         public async Task ReportLocationState(IEnumerable<Contracts.PersonState> peopleState)

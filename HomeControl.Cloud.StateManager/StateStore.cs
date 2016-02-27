@@ -61,9 +61,15 @@ namespace HomeControl.Cloud.Managers
                 new Realm("Default", new Group[] { 
                     new Group("Morad", new Location[] { 
                         new Location("Home", new Person[] { 
-                            new Person("Galia"),
-                            new Person("Oron")                        
-                        })})})};
+                                new Person("Galia"),
+                                new Person("Oron")                        
+                        })}),
+                    new Group("Yarimi", new Location[] { 
+                        new Location("Home", new Person[] { 
+                                new Person("Or"),
+                                new Person("Tamar")                        
+                        })})
+                })};
         }
 
         public void UpdateLocationState(string Realm, string Group, string Location, IEnumerable<Model.Person> people)
@@ -82,15 +88,19 @@ namespace HomeControl.Cloud.Managers
             log.DebugFormat("updateperssta index {0}", peopleIndex.Count);
             
             key = peopleIndex.Keys.FirstOrDefault(k => k.ToString() == key.ToString());
+            log.DebugFormat("updateperssta found key {0}", key == null ? "null" : key.ToString());
             if (key == null || !peopleIndex.TryGetValue(key, out personInState))
             {
                 log.WarnFormat("Couldnt find key {0}", key == null ? "null" : key.ToString());
             }
             else
             {
-                if (personInState.LastLeft > person.LastLeft ||
-                    personInState.LastSeen > person.LastSeen)
+                log.DebugFormat("updateperssta starting update with key {0} new {1} old {2}", key, person, personInState);
+                if ((personInState.LastLeft > person.LastLeft ||
+                    personInState.LastSeen > person.LastSeen) &&
+                    personInState.LastLeft != DateTime.MinValue)
                 {
+                    log.Warn("updateperssta warning");
                     log.WarnFormat("Received old information about {0} with {1}", personInState, person);
                 }
                 else
@@ -98,6 +108,7 @@ namespace HomeControl.Cloud.Managers
                     log.DebugFormat("cloning  {0}", personInState.Name);
                     var oldPersonInState = personInState.Clone();
                     log.DebugFormat("updateperssta person old {0}", personInState.Name);
+                    log.DebugFormat("updateperssta person new {0}", person);
                     personInState.LastLeft = person.LastLeft;
                     personInState.LastSeen = person.LastSeen;
                     personInState.IsPresent = person.IsPresent;

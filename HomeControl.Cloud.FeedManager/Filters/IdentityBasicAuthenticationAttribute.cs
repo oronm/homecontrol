@@ -13,18 +13,18 @@ namespace WebApiBasicAuth.Filters
     public static class FeederControllerExtentionMethods
     {
         private const string KEY = "FeederIdentity";
-        public static FeederIdentity GetFeederIdentity(this StateController controller)
+        public static StateIdentity GetFeederIdentity(this StateController controller)
         {
-            FeederIdentity result = null;
+            StateIdentity result = null;
             if (HttpContext.Current.Items.Contains(KEY))
             {
-                result = HttpContext.Current.Items[KEY] as FeederIdentity;
+                result = HttpContext.Current.Items[KEY] as StateIdentity;
             }
 
             return result;
         }
 
-        public static void SetFeederIdentity(FeederIdentity identity)
+        public static void SetFeederIdentity(StateIdentity identity)
         {
             HttpContext.Current.Items.Add("FeederIdentity", identity);
         }
@@ -42,11 +42,11 @@ namespace WebApiBasicAuth.Filters
             }
             if (token == "oron:oron")
             {
-                FeederControllerExtentionMethods.SetFeederIdentity(new FeederIdentity() { Group = "Morad", Location = "Home", Realm = "Default" });
+                FeederControllerExtentionMethods.SetFeederIdentity(new StateIdentity("Default", "Morad", "Home"));
             }
             else if (token == "yarimi:efes")
             {
-                FeederControllerExtentionMethods.SetFeederIdentity(new FeederIdentity() { Group = "Yarimi", Location = "Home", Realm = "Default" });
+                FeederControllerExtentionMethods.SetFeederIdentity(new StateIdentity("Default", "Yarimi", "Home"));
             }
             else
             {

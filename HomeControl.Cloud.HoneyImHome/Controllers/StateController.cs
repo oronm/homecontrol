@@ -30,7 +30,7 @@ namespace HomeControl.Cloud.HoneyImHome.Controllers
             this.stateReport = fac.CreateChannel();   
         }
         
-        private bool validateIdentity(FeederIdentity identity)
+        private bool validateIdentity(StateIdentity identity)
         {
             return identity != null &&
                 !string.IsNullOrWhiteSpace(identity.Group) &&
@@ -38,17 +38,13 @@ namespace HomeControl.Cloud.HoneyImHome.Controllers
                 !string.IsNullOrWhiteSpace(identity.Realm);
         }
 
-        //[IdentityBasicAuthentication]
-        //[Authorize]
+        [IdentityBasicAuthentication]
+        [Authorize]
         // POST: api/State
         public async Task<IEnumerable<PersonState>> Get()
         {
-            var id = new
-            {
-                Realm = "Default",
-                Group = "Morad",
-                Location = "Home"
-            };
+            var id = this.GetFeederIdentity();
+            if (id == null) return null;
          
             log.DebugFormat("Getting state");
             IEnumerable<PersonState> res = null;
@@ -64,19 +60,17 @@ namespace HomeControl.Cloud.HoneyImHome.Controllers
         }
 
         [Route("api/State/{name}/History")]
+        [IdentityBasicAuthentication]
+        [Authorize]
         public async Task<PersonStateHistory> GetHistory(string name)
         {
+            var id = this.GetFeederIdentity();
+            if (id == null) return null;
+
             if (string.IsNullOrWhiteSpace(name))
             {
                 return null;
             }
-
-            var id = new
-            {
-                Realm = "Default",
-                Group = "Morad",
-                Location = "Home"
-            };
 
             PersonStateHistory history;
             try
@@ -91,5 +85,81 @@ namespace HomeControl.Cloud.HoneyImHome.Controllers
 
             return history;
         }
+
+        [Route("api/State/CreateToken")]
+        [HttpGet]
+        public async Task<string> CreateToken(string username, string password)
+        {
+            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
+                return null;
+
+            string token = null;
+
+            if (username == "oron" && password == "oron")
+            {
+                token = WebApiApplication.TokensStore.CreateToken(new StateIdentity("Default", "Morad", "Home"));
+            }
+            else if (username == "yarimi" && password == "efes")
+            {
+                token = WebApiApplication.TokensStore.CreateToken(new StateIdentity("Default", "Yarimi", "Home"));
+            }
+
+            return token;
+        }
+
+        [HttpOptions]
+        public IHttpActionResult Options()
+        {
+            return Ok();
+        }
+
+        [HttpOptions]
+        [HttpPost]
+        [Route("api/State/CreateTokenEmail")]
+        public IHttpActionResult CreateTokenEmail(LoginRequest req)
+        {
+            var token = createToken(req.email, req.password);
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                return ResponseMessage(new HttpResponseMessage(HttpStatusCode.Unauthorized) { ReasonPhrase = "Invalid login details" } );
+            }
+            else
+            {
+                return Ok(new { access_token = token });
+            }
+        }
+
+        [Route("api/State/CreateTokenEmail")]
+        [HttpPost]
+        [HttpGet]
+        public async Task<string> CreateTokenEmail(string email, string password)
+        {
+            return createToken(email, password);
+        }
+
+        private string createToken(string id, string password)
+        {
+            if (string.IsNullOrWhiteSpace(id) || string.IsNullOrWhiteSpace(password))
+                return null;
+
+            string token = null;
+
+            if (id == "oron" && password == "oron")
+            {
+                token = WebApiApplication.TokensStore.CreateToken(new StateIdentity("Default", "Morad", "Home"));
+            }
+            else if (id == "yarimi" && password == "efes")
+            {
+                token = WebApiApplication.TokensStore.CreateToken(new StateIdentity("Default", "Yarimi", "Home"));
+            }
+
+            return token;
+        }
+    }
+
+    public struct LoginRequest
+    {
+        public string email;
+        public string password;
     }
 }

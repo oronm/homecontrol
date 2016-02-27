@@ -15,8 +15,9 @@ namespace WebApiBasicAuth.Filters
 {
     public abstract class BasicAuthenticationAttribute : Attribute, IAuthenticationFilter
     {
-        private const string authType = System.Security.Claims.AuthenticationTypes.Basic;
-        public string Realm { get; set; }
+        private const string authType = "Bearer";
+        //private const string authType = System.Security.Claims.AuthenticationTypes.Signature;
+        public string Token { get; set; }
 
         public async Task AuthenticateAsync(HttpAuthenticationContext context, CancellationToken cancellationToken)
         {
@@ -72,42 +73,7 @@ namespace WebApiBasicAuth.Filters
 
         private static string ExtractToken(string authorizationParameter)
         {
-            byte[] credentialBytes;
-
-            try
-            {
-                credentialBytes = Convert.FromBase64String(authorizationParameter);
-            }
-            catch (FormatException)
-            {
-                return null;
-            }
-
-            // The currently approved HTTP 1.1 specification says characters here are ISO-8859-1.
-            // However, the current draft updated specification for HTTP 1.1 indicates this encoding is infrequently
-            // used in practice and defines behavior only for ASCII.
-            Encoding encoding = Encoding.ASCII;
-            // Make a writable copy of the encoding to enable setting a decoder fallback.
-            encoding = (Encoding)encoding.Clone();
-            // Fail on invalid bytes rather than silently replacing and continuing.
-            encoding.DecoderFallback = DecoderFallback.ExceptionFallback;
-            string decodedCredentials;
-
-            try
-            {
-                decodedCredentials = encoding.GetString(credentialBytes);
-            }
-            catch (DecoderFallbackException)
-            {
-                return null;
-            }
-
-            if (String.IsNullOrEmpty(decodedCredentials))
-            {
-                return null;
-            }
-
-            return decodedCredentials;
+            return authorizationParameter;
         }
 
         public Task ChallengeAsync(HttpAuthenticationChallengeContext context, CancellationToken cancellationToken)
@@ -120,7 +86,7 @@ namespace WebApiBasicAuth.Filters
         {
             string parameter;
 
-            if (String.IsNullOrEmpty(Realm))
+            if (String.IsNullOrEmpty(Token))
             {
                 parameter = null;
             }
@@ -128,7 +94,7 @@ namespace WebApiBasicAuth.Filters
             {
                 // A correct implementation should verify that Realm does not contain a quote character unless properly
                 // escaped (precededed by a backslash that is not itself escaped).
-                parameter = "realm=\"" + Realm + "\"";
+                parameter = string.Format("{0}=\"{1}\"",authType, Token);
             }
 
             context.ChallengeWith(authType, parameter);

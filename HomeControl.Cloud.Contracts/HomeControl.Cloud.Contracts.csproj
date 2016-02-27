@@ -52,10 +52,12 @@
   <ItemGroup>
     <Compile Include="IStateFeed.cs" />
     <Compile Include="IStateReport.cs" />
-    <Compile Include="Models\FeederIdentity.cs" />
+    <Compile Include="ITokensStore.cs" />
+    <Compile Include="Models\StateIdentity.cs" />
     <Compile Include="Models\State.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StateFeedClient.cs" />
+    <Compile Include="UglyTokenStore.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -10,37 +10,47 @@ using HomeControl.Cloud.Contracts.Models;
 
 namespace WebApiBasicAuth.Filters
 {
-    public static class FeederControllerExtentionMethods
+    // TODO : UGLY!! Change This!!
+    public static class StateControllerExtentionMethods
     {
-        private const string KEY = "FeederIdentity";
-        public static FeederIdentity GetFeederIdentity(this StateController controller)
+        private const string KEY = "Identity";
+        public static StateIdentity GetFeederIdentity(this StateController controller)
         {
-            FeederIdentity result = null;
+            StateIdentity result = null;
             if (HttpContext.Current.Items.Contains(KEY))
             {
-                result = HttpContext.Current.Items[KEY] as FeederIdentity;
+                result = HttpContext.Current.Items[KEY] as StateIdentity;
             }
 
             return result;
         }
 
-        public static void SetFeederIdentity(FeederIdentity identity)
+        public static void SetFeederIdentity(StateIdentity identity)
         {
-            HttpContext.Current.Items.Add("FeederIdentity", identity);
+            HttpContext.Current.Items.Add(KEY, identity);
         }
     }
     public class IdentityBasicAuthenticationAttribute : BasicAuthenticationAttribute
     {
         protected override async Task<IPrincipal> AuthenticateAsync(string token, CancellationToken cancellationToken)
         {
-            cancellationToken.ThrowIfCancellationRequested(); 
+            cancellationToken.ThrowIfCancellationRequested();
+            StateIdentity requestIdentity = null;
 
             if (string.IsNullOrWhiteSpace(token))
             {
                 // No user with userName/password exists.
                 return null;
             }
-            FeederControllerExtentionMethods.SetFeederIdentity(new FeederIdentity() { Group = "Morad", Location = "Home", Realm = "Default" });
+            else
+            {
+                requestIdentity = HomeControl.Cloud.HoneyImHome.WebApiApplication.TokensStore.GetIdentity(token);
+                if (requestIdentity == null)
+                    return null;
+
+                StateControllerExtentionMethods.SetFeederIdentity(requestIdentity);
+            }
+
 
             // Create a ClaimsIdentity with all the claims for this user.
             Claim nameClaim = new Claim(ClaimTypes.Authentication, token);
