@@ -4,18 +4,22 @@
 
         <form submit.trigger="submit()">
             <div>
-                <label>First Name</label>
-                <input type="text" value.bind="firstName">
+                <label>User Name</label>
+                <input type="text" value.bind="userName">
             </div>
             <div>
-                <label>Last Name</label>
-                <input type="text" value.bind="lastName">
-            </div>
-            <div>
-                <label>Full Name</label>
-                <p>${fullName}</p>
+                <label>Password</label>
+                <input type="text" value.bind="password">
             </div>
             <button type="submit">Submit</button>
+            <div>
+                <label>Error Message</label>
+                <input type="text" value.bind="errorMessage">
+            </div>
+            <div>
+                <label>Token</label>
+                <input type="text" value.bind="token">
+            </div>
         </form>
     </section>
 </template>

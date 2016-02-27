@@ -15,8 +15,8 @@ export class residentHistory {
         http.configure(config => {
             config
                 .useStandardConfiguration()
-                .withBaseUrl('http://localhost:60756/api/State');
-                //.withBaseUrl('http://homecontrol-cloud-honeyimhome.azurewebsites.net/api/State');
+                //.withBaseUrl('http://localhost:60756/api/State');
+                .withBaseUrl('http://homecontrol-cloud-honeyimhome.azurewebsites.net/api/State');
         });
         //this.name = "Oron";
         this.name = name;
@@ -36,20 +36,20 @@ export class residentHistory {
     startRefresh(): void {
         setInterval(() => {
             this.refreshHistory();
-        }, 5000);
+        }, 60000);
         //setInterval(this.refreshResidents, 5000);
     }
 
     refreshHistory(): any {
-        console.log("hist " + this.name);
+        //console.log("hist " + this.name);
         if (!this.name || this.name == "") {
             this.history = [];
-            console.log("returning");
+            //console.log("returning");
             return;
         }
         //Console.log("ref");
         //this.residents.push({ name: "ER" });
-        console.log("fetching history for " + this.name);
+        //console.log("fetching history for " + this.name);
         this.http.fetch("/" + this.name + '/History')
             .then(response => response.json())
             .then(History => this.history = History.history)

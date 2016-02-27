@@ -10,17 +10,30 @@ export class Users {
     residents: any[] = [];
     ea: EventAggregator;
     selectedResident: string;
+    token: string;
 
     constructor(private http: HttpClient, ea: EventAggregator) {
-        http.configure(config => {
-            config
-                .useStandardConfiguration()
-                .withBaseUrl('http://localhost:60756/api/State');
-                //.withBaseUrl('http://homecontrol-cloud-honeyimhome.azurewebsites.net/api/State');
-        });
+        console.log("creating users");
+        this.configureHTTP();
+
         this.selectedResident = "";
         this.ea = ea;
         this.selectedResident = "";
+    }
+
+    private configureHTTP() {
+        this.http.configure(config => {
+            config
+                .useStandardConfiguration()
+                .withDefaults({
+                    headers: {
+                        'Authorization': 'Basic ' + this.token,
+                    }
+                })
+            //.withBaseUrl('http://localhost:60756/api/State');
+                .withBaseUrl('http://homecontrol-cloud-honeyimhome.azurewebsites.net/api/State');
+        });
+
     }
 
     activate() {
@@ -38,6 +51,9 @@ export class Users {
     refreshResidents(): any {
         //Console.log("ref");
         //this.residents.push({ name: "ER" });
+        //if (this.token == null || this.token == "")
+        //    return;
+
        this.http.fetch('')
             .then(response => response.json())
             .then(State => this.residents = State)
