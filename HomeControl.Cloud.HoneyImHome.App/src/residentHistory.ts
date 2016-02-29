@@ -2,6 +2,7 @@ import {autoinject} from 'aurelia-framework';
 import {HttpClient } from 'aurelia-fetch-client';
 import {EventAggregator } from 'aurelia-event-aggregator';
 import {ShowHistoryCommand } from './ShowHistoryCommand';
+import {AppConfiguration } from "./AppConfiguration";
 
 import 'fetch';
 
@@ -10,13 +11,14 @@ export class residentHistory {
     public name: string = '';
     history: any[] = [];
     ea: EventAggregator;
+    appconfig: AppConfiguration;
 
-    constructor(private http: HttpClient, name: string, ea: EventAggregator) {
+    constructor(private http: HttpClient, name: string, ea: EventAggregator, appconfig: AppConfiguration) {
+        this.appconfig = appconfig;
         http.configure(config => {
             config
                 .useStandardConfiguration()
-                //.withBaseUrl('http://localhost:60756/api/State');
-                .withBaseUrl('http://homecontrol-cloud-honeyimhome.azurewebsites.net/api/State');
+                .withBaseUrl(this.appconfig.baseUri);
         });
         //this.name = "Oron";
         this.name = name;
@@ -50,7 +52,7 @@ export class residentHistory {
         //Console.log("ref");
         //this.residents.push({ name: "ER" });
         //console.log("fetching history for " + this.name);
-        this.http.fetch("/" + this.name + '/History')
+        this.http.fetch("/" + this.name + '/' + this.appconfig.historyAction)
             .then(response => response.json())
             .then(History => this.history = History.history)
         .catch(error => this.history = []);

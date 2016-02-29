@@ -2,6 +2,7 @@ import {autoinject} from 'aurelia-framework';
 import {HttpClient } from 'aurelia-fetch-client';
 import {EventAggregator } from 'aurelia-event-aggregator';
 import {ShowHistoryCommand } from './ShowHistoryCommand';
+import {AppConfiguration } from "./AppConfiguration";
 import 'fetch';
 
 @autoinject
@@ -11,9 +12,11 @@ export class Users {
     ea: EventAggregator;
     selectedResident: string;
     token: string;
+    appconfig: AppConfiguration;
 
-    constructor(private http: HttpClient, ea: EventAggregator) {
+    constructor(private http: HttpClient, ea: EventAggregator, appconfig: AppConfiguration) {
         console.log("creating users");
+        this.appconfig = appconfig;
         this.configureHTTP();
 
         this.selectedResident = "";
@@ -22,6 +25,7 @@ export class Users {
     }
 
     private configureHTTP() {
+        console.log(this.appconfig.baseUri);
         this.http.configure(config => {
             config
                 .useStandardConfiguration()
@@ -30,8 +34,7 @@ export class Users {
                         'Authorization': 'Basic ' + this.token,
                     }
                 })
-            //.withBaseUrl('http://localhost:60756/api/State');
-                .withBaseUrl('http://homecontrol-cloud-honeyimhome.azurewebsites.net/api/State');
+                .withBaseUrl(this.appconfig.baseUri);
         });
 
     }
