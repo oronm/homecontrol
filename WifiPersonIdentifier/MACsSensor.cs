@@ -14,6 +14,7 @@ namespace WifiDeviceIdentifier
     public class MACsSensor : AbstractTimedSensor, ISensor
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private  Helpers.Network.WiFi.TpLink_WDR430.MACScanner scanner =   new Helpers.Network.WiFi.TpLink_WDR430.MACScanner("192.168.0.1", "admin", "admin");
 
         protected override IEnumerable<IDetectable> Detect()
         {
@@ -31,9 +32,10 @@ namespace WifiDeviceIdentifier
 
         private IEnumerable<string> getConnectedMacs()
         {
-            return (from ipinfo in IPInfo.GetIPInfo()
-                    where !ipinfo.MacAddress.StartsWith("01-00")
-                   select parseMacFromString(ipinfo.MacAddress)).ToArray();
+            return scanner.GetConnectedMacs();
+            //return (from ipinfo in IPInfo.GetIPInfo()
+            //        where !ipinfo.MacAddress.StartsWith("01-00")
+            //       select parseMacFromString(ipinfo.MacAddress)).ToArray();
         }
 
         private string parseMacFromString(string macAddressString)

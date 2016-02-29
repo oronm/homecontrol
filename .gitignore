@@ -9,3 +9,4 @@ bin/
 obj/
 packages/
 *.force
+jspm_packages/

@@ -76,6 +76,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Common\Helpers.Network.WiFi\Helpers.Network.WiFi.csproj">
+      <Project>{b041220d-a288-4c4d-9fad-f9cc25df5019}</Project>
+      <Name>Helpers.Network.WiFi</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Common\Helpers.Network\Helpers.Network.csproj">
       <Project>{b58ba953-4693-499c-b528-3d5526225643}</Project>
       <Name>Helpers.Network</Name>

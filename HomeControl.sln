@@ -37,6 +37,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeControl.Cloud.ManagersW
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Helpers.Network", "..\Common\Helpers.Network\Helpers.Network.csproj", "{B58BA953-4693-499C-B528-3D5526225643}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Helpers.Network.WiFi", "..\Common\Helpers.Network.WiFi\Helpers.Network.WiFi.csproj", "{B041220D-A288-4C4D-9FAD-F9CC25DF5019}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -165,6 +167,14 @@ Global
 		{B58BA953-4693-499C-B528-3D5526225643}.DeployService|Any CPU.Build.0 = Debug|Any CPU
 		{B58BA953-4693-499C-B528-3D5526225643}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B58BA953-4693-499C-B528-3D5526225643}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B041220D-A288-4C4D-9FAD-F9CC25DF5019}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B041220D-A288-4C4D-9FAD-F9CC25DF5019}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B041220D-A288-4C4D-9FAD-F9CC25DF5019}.DeployAzure|Any CPU.ActiveCfg = Debug|Any CPU
+		{B041220D-A288-4C4D-9FAD-F9CC25DF5019}.DeployAzure|Any CPU.Build.0 = Debug|Any CPU
+		{B041220D-A288-4C4D-9FAD-F9CC25DF5019}.DeployService|Any CPU.ActiveCfg = Debug|Any CPU
+		{B041220D-A288-4C4D-9FAD-F9CC25DF5019}.DeployService|Any CPU.Build.0 = Debug|Any CPU
+		{B041220D-A288-4C4D-9FAD-F9CC25DF5019}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B041220D-A288-4C4D-9FAD-F9CC25DF5019}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
