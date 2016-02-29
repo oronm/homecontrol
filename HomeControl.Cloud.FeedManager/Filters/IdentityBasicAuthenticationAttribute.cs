@@ -48,6 +48,10 @@ namespace WebApiBasicAuth.Filters
             {
                 FeederControllerExtentionMethods.SetFeederIdentity(new StateIdentity("Default", "Yarimi", "Home"));
             }
+            else if (token == "testarp:testarp")
+            {
+                FeederControllerExtentionMethods.SetFeederIdentity(new StateIdentity("Test", "Morad", "Home"));
+            }
             else
             {
                 return null;

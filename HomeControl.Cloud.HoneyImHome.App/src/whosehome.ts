@@ -3,6 +3,7 @@ import {HttpClient } from 'aurelia-fetch-client';
 import {EventAggregator } from 'aurelia-event-aggregator';
 import {ShowHistoryCommand } from './ShowHistoryCommand';
 import {AppConfiguration } from "./AppConfiguration";
+//import { FetchConfig } from 'paulvanbladel/aurelia-auth';
 import 'fetch';
 
 @autoinject
@@ -14,7 +15,7 @@ export class Users {
     token: string;
     appconfig: AppConfiguration;
 
-    constructor(private http: HttpClient, ea: EventAggregator, appconfig: AppConfiguration) {
+    constructor(private http: HttpClient, ea: EventAggregator, appconfig: AppConfiguration, svc: AuthService ) {
         console.log("creating users");
         this.appconfig = appconfig;
         this.configureHTTP();
@@ -29,11 +30,11 @@ export class Users {
         this.http.configure(config => {
             config
                 .useStandardConfiguration()
-                .withDefaults({
-                    headers: {
-                        'Authorization': 'Basic ' + this.token,
-                    }
-                })
+                //.withDefaults({
+                //    headers: {
+                //        'Authorization': 'Basic ' + this.token,
+                //    }
+                //})
                 .withBaseUrl(this.appconfig.baseUri);
         });
 

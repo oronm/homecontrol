@@ -41,9 +41,13 @@ namespace HomeControl.Cloud.HoneyImHome.Controllers
         [IdentityBasicAuthentication]
         [Authorize]
         // POST: api/State
-        public async Task<IEnumerable<PersonState>> Get()
+        public async Task<IEnumerable<PersonState>> Get(string testingarp = "")
         {
             var id = this.GetFeederIdentity();
+            //var id = new StateIdentity("Default", "Morad", "Home");
+            //if (!string.IsNullOrWhiteSpace(testingarp))
+            //    id = new StateIdentity("Test", "Morad", "Home");
+
             if (id == null) return null;
          
             log.DebugFormat("Getting state");
@@ -62,9 +66,13 @@ namespace HomeControl.Cloud.HoneyImHome.Controllers
         [Route("api/State/{name}/History")]
         [IdentityBasicAuthentication]
         [Authorize]
-        public async Task<PersonStateHistory> GetHistory(string name)
+        public async Task<PersonStateHistory> GetHistory(string name, string testingarp="")
         {
             var id = this.GetFeederIdentity();
+            //var id = new StateIdentity("Default", "Morad", "Home");
+            //if (!string.IsNullOrWhiteSpace(testingarp))
+            //    id = new StateIdentity("Test", "Morad", "Home");
+
             if (id == null) return null;
 
             if (string.IsNullOrWhiteSpace(name))
@@ -151,6 +159,10 @@ namespace HomeControl.Cloud.HoneyImHome.Controllers
             else if (id == "yarimi" && password == "efes")
             {
                 token = WebApiApplication.TokensStore.CreateToken(new StateIdentity("Default", "Yarimi", "Home"));
+            }
+            else if (id == "testingarp" && password == "testingarp")
+            {
+                token = WebApiApplication.TokensStore.CreateToken(new StateIdentity("Test", "Morad", "Home"));
             }
 
             return token;

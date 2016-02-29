@@ -1,4 +1,6 @@
 export class AppConfiguration {
+    baseUri: string;
+    historyAction: string;
 
     constructor() {
         this.baseUri = 'http://homecontrol-cloud-honeyimhome.azurewebsites.net/api/State';

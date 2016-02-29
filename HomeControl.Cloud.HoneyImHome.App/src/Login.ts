@@ -1,47 +1,34 @@
-import {autoinject} from 'aurelia-framework';
-import {HttpClient } from 'aurelia-http-client';
-import {EventAggregator } from 'aurelia-event-aggregator';
-import 'fetch';
+import {AuthService } from 'paulvanbladel/aurelia-auth';
+import {inject } from 'aurelia-framework';
 
-@autoinject
-export class Login  {
-    heading: string = 'Login';
-    userName: string;
-    password: string;
-    token: string;
-    errorMessage : string;
-        
-    constructor(private http: HttpClient, name: string, private ea: EventAggregator) {
-        http.configure(config => {
-            config
-            .withBaseUrl('http://localhost:60756/api/State');
-                //.withBaseUrl('http://homecontrol-cloud-honeyimhome.azurewebsites.net/api/State');
-        });
+@inject(AuthService)
 
-    }
+export class Login {
 
-    submit(): void {
-        var formData = new FormData();
-        formData.append('username', this.userName);
-        formData.append('password', this.password);
+    heading = 'Login';
 
-        this.errorMessage = "";
-        this.http.createRequest('/Login')
-            .asGet()
-            .withParams({
-                username: this.userName,
-                password: this.password
+    // User inputs will be bound to these view models
+    // and when submitting the form for login  
+    email = '';
+    password = '';
+
+    // This view model will be given an error value
+    // if anything goes wrong with the login
+    loginError = '';
+
+    auth: AuthService;
+
+    constructor(auth) {
+        this.auth = auth;
+  };
+
+    login() {
+        return this.auth.login(this.email, this.password)
+            .then(response => {
+                console.log("Login response: " + response);
             })
-        .send()
-        .then(response => this.handleLoginResult(JSON.parse(response.response)))
-        .catch(error => this.errorMessage = JSON.parse(error.response).message);
-    }
-
-    handleLoginResult(responseToken: string) {
-        this.token = responseToken;
-
-        if (this.token == "" || this.token == null) this.errorMessage = this.errorMessage + " login failed";
-    }
-
-
+            .catch(error => {
+                this.loginError = "Login Failed";
+            });
+  };
 }
