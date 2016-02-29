@@ -33,9 +33,9 @@ namespace WifiDeviceIdentifier
         private IEnumerable<string> getConnectedMacs()
         {
             return scanner.GetConnectedMacs();
-            //return (from ipinfo in IPInfo.GetIPInfo()
+            //return (from ipinfo in IPInfo.GetIPInfoWithPings()
             //        where !ipinfo.MacAddress.StartsWith("01-00")
-            //       select parseMacFromString(ipinfo.MacAddress)).ToArray();
+            //        select parseMacFromString(ipinfo.MacAddress)).ToArray();
         }
 
         private string parseMacFromString(string macAddressString)

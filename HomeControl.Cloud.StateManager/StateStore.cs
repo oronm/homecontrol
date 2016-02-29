@@ -69,7 +69,14 @@ namespace HomeControl.Cloud.Managers
                                 new Person("Or"),
                                 new Person("Tamar")                        
                         })})
-                })};
+                }),
+                new Realm("Test", new Group[] { 
+                    new Group("Morad", new Location[] { 
+                        new Location("Home", new Person[] { 
+                                new Person("Galia"),
+                                new Person("Oron")                        
+                        })})})
+            };
         }
 
         public void UpdateLocationState(string Realm, string Group, string Location, IEnumerable<Model.Person> people)
