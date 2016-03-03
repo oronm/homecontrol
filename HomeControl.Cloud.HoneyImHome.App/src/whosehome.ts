@@ -14,8 +14,9 @@ export class Users {
     selectedResident: string;
     token: string;
     appconfig: AppConfiguration;
+    refreshVar: any;
 
-    constructor(private http: HttpClient, ea: EventAggregator, appconfig: AppConfiguration, svc: AuthService ) {
+    constructor(private http: HttpClient, ea: EventAggregator, appconfig: AppConfiguration) {
         console.log("creating users");
         this.appconfig = appconfig;
         this.configureHTTP();
@@ -27,16 +28,11 @@ export class Users {
 
     private configureHTTP() {
         console.log(this.appconfig.baseUri);
-        this.http.configure(config => {
-            config
-                .useStandardConfiguration()
-                //.withDefaults({
-                //    headers: {
-                //        'Authorization': 'Basic ' + this.token,
-                //    }
-                //})
-                .withBaseUrl(this.appconfig.baseUri);
-        });
+        //this.http.configure(config => {
+        //    config
+        //        .useStandardConfiguration()
+        //        .withBaseUrl(this.appconfig.baseUri);
+        //});
 
     }
 
@@ -45,20 +41,29 @@ export class Users {
         return this.refreshResidents();
     }
 
-    startRefresh(): void {
-        setInterval(() => {
-            this.refreshResidents();
-        }, 5000);
-        //setInterval(this.refreshResidents, 5000);
+    detached() {
+        this.stopRefresh();
     }
 
-    refreshResidents(): any {
-        //Console.log("ref");
-        //this.residents.push({ name: "ER" });
-        //if (this.token == null || this.token == "")
-        //    return;
 
-       this.http.fetch('')
+    startRefresh(): void {
+        this.stopRefresh();
+        this.refreshVar = setInterval(() => {
+            this.refreshResidents();
+        }, this.appconfig.stateRefreshInterval);
+    }
+
+    stopRefresh(): void {
+        var refresh = this.refreshVar;
+        if (refresh) {
+            clearInterval(refresh);
+        }
+    }
+
+
+
+    refreshResidents(): any {
+        this.http.fetch(this.appconfig.baseUri)
             .then(response => response.json())
             .then(State => this.residents = State)
         .catch(error => this.residents = []);

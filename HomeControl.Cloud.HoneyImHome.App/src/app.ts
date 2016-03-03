@@ -1,27 +1,39 @@
 import { autoinject, inject} from 'aurelia-framework';
 import { RouterConfiguration, Router} from 'aurelia-router';
+import {HttpClient } from 'aurelia-fetch-client';
+import authconfig from './auth-config';
 import 'fetch';
 import { AuthorizeStep, FetchConfig, AuthService } from 'paulvanbladel/aurelia-auth';
-//import {FetchConfig } from 'paulvanbladel/aurelia-auth/app.fetch-httpClient.config';
 
-//import {HttpClientConfig} from 'paulvanbladel/aureliauth/app.httpClient.config';
-//import {config } from './auth-config';
+// TODO: Refresh token?
 
 @autoinject
 export class App {
     router: Router;
     httpClientConfig: FetchConfig;
-    constructor(httpClientConfig: FetchConfig) {
+    httpClient: HttpClient;
+
+    constructor(httpClientConfig: FetchConfig, httpClient: HttpClient) {
         this.httpClientConfig = httpClientConfig;
+        this.httpClient = httpClient;
     }
 
     configureRouter(config: RouterConfiguration, router: Router) {  
-    //configureRouter(config: RouterConfiguration, router: Router, httpClientConfig: HttpClientConfig) {  
         config.title = 'HIHome';
-        //console.log(new FetchConfig());
-        //console.log(FetchConfig);
 
         this.httpClientConfig.configure();
+        this.httpClient.configure(config => {
+            config
+                .withInterceptor({
+                    response(response) {
+                        if (response.status == 401 && response.url.indexOf(authconfig.loginUrl) <= 0) {
+                            router.navigate("login");
+                    }
+                        return response;
+                    }
+                });
+
+        });
 
         config.addPipelineStep('authorize', AuthorizeStep);
 

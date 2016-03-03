@@ -13,10 +13,11 @@
                     <div class="">
                         <span class="">${historyRecord.recordDate | dateFormat:'D/M HH:mm'}</span>
                         <span>${historyRecord.wasPresent ? "Left" : "Arrived"}</span>
-                        <span>at ${ actionDate(historyRecord) | dateFormat:'HH:mm' }</span>
                         <span><!--at ${historyRecord.wasPresent ? historyRecord.lastSeen | dateFormat:'D/M HH:mm:ss' : historyRecord.lastLeft | dateFormat:'D/M HH:mm:ss'}--></span>
+                        <!--
+                        <span>at ${ actionDate(historyRecord) | dateFormat:'HH:mm' }</span>
                         <span>S/${historyRecord.lastSeen  | dateFormat:'HH:mm'}</span>
-                        <span>L/${historyRecord.lastLeft | dateFormat:'HH:mm'}</span>
+                        <span>L/${historyRecord.lastLeft | dateFormat:'HH:mm'}</span>-->
                     </div>
                 </div>
             </div>

@@ -12,14 +12,15 @@ export class residentHistory {
     history: any[] = [];
     ea: EventAggregator;
     appconfig: AppConfiguration;
+    refreshVar: any;
 
     constructor(private http: HttpClient, name: string, ea: EventAggregator, appconfig: AppConfiguration) {
         this.appconfig = appconfig;
-        http.configure(config => {
-            config
-                .useStandardConfiguration()
-                .withBaseUrl(this.appconfig.baseUri);
-        });
+        //http.configure(config => {
+        //    config
+        //        .useStandardConfiguration()
+        //        .withBaseUrl(this.appconfig.baseUri);
+        //});
         //this.name = "Oron";
         this.name = name;
         this.ea = ea;
@@ -35,24 +36,31 @@ export class residentHistory {
         return this.refreshHistory();
     }
 
-    startRefresh(): void {
-        setInterval(() => {
-            this.refreshHistory();
-        }, 60000);
-        //setInterval(this.refreshResidents, 5000);
+    detached() {
+        this.stopRefresh();
     }
 
+    startRefresh(): void {
+        this.stopRefresh();
+        this.refreshVar = setInterval(() => {
+            this.refreshHistory();
+        }, this.appconfig.historyRefreshInterval);
+    }
+
+    stopRefresh(): void {
+        var refresh = this.refreshVar;
+        if (refresh) {
+            clearInterval(refresh);
+        }
+    }
+
+
     refreshHistory(): any {
-        //console.log("hist " + this.name);
         if (!this.name || this.name == "") {
             this.history = [];
-            //console.log("returning");
             return;
         }
-        //Console.log("ref");
-        //this.residents.push({ name: "ER" });
-        //console.log("fetching history for " + this.name);
-        this.http.fetch("/" + this.name + '/' + this.appconfig.historyAction)
+        this.http.fetch(this.appconfig.baseUri + "/" + this.name + '/' + this.appconfig.historyAction)
             .then(response => response.json())
             .then(History => this.history = History.history)
         .catch(error => this.history = []);

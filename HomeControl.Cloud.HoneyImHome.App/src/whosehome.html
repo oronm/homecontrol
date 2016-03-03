@@ -13,8 +13,8 @@
                     </div>
                     <div class="content">
                         <p class="name">${resident.name}</p>
-                        <p>Last Seen: ${resident.lastSeen  | dateFormat}</p>
-                        <p>Last Left: ${resident.lastLeft | dateFormat}</p>
+                        <p class="${resident.IsPresent ? '' : 'hidden'}">Seen: ${resident.lastSeen  | dateFormat}</p>
+                        <p class="${resident.IsPresent ? 'hidden' : ''}">Left: ${resident.lastLeft | dateFormat}</p>
                     </div>
                 </div>
             </div>

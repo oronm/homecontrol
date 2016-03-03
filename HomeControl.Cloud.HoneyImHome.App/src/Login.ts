@@ -11,6 +11,7 @@ export class Login {
     // and when submitting the form for login  
     email = '';
     password = '';
+    working: boolean;
 
     // This view model will be given an error value
     // if anything goes wrong with the login
@@ -20,14 +21,17 @@ export class Login {
 
     constructor(auth) {
         this.auth = auth;
+        this.working = false;
   };
 
     login() {
+        this.working = true;
+
         return this.auth.login(this.email, this.password)
             .then(response => {
-                console.log("Login response: " + response);
             })
             .catch(error => {
+                this.working = false;
                 this.loginError = "Login Failed";
             });
   };
