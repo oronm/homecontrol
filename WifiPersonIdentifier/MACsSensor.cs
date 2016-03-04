@@ -15,6 +15,7 @@ namespace WifiDeviceIdentifier
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private  Helpers.Network.WiFi.TpLink_WDR430.MACScanner scanner =   new Helpers.Network.WiFi.TpLink_WDR430.MACScanner("192.168.0.1", "admin", "admin");
+        private CancellationTokenSource broadcastCancellation = null;
 
         protected override IEnumerable<IDetectable> Detect()
         {
@@ -32,10 +33,11 @@ namespace WifiDeviceIdentifier
 
         private IEnumerable<string> getConnectedMacs()
         {
-            return scanner.GetConnectedMacs();
-            //return (from ipinfo in IPInfo.GetIPInfoWithPings()
-            //        where !ipinfo.MacAddress.StartsWith("01-00")
-            //        select parseMacFromString(ipinfo.MacAddress)).ToArray();
+            //return scanner.GetConnectedMacs();
+            //return (from ipinfo in IPInfo.GetIPInfoWithPings(this.registeredDetectables.Values.Select(val => val.Identification))
+            return (from ipinfo in IPInfo.GetIPInfoWithPings(IPInfoMethodType.Netsh)
+                    where !ipinfo.MacAddress.StartsWith("01-00")
+                    select parseMacFromString(ipinfo.MacAddress)).ToArray();
         }
 
         private string parseMacFromString(string macAddressString)
@@ -50,5 +52,52 @@ namespace WifiDeviceIdentifier
             }
             return macAddressString.Trim().ToLower();
         }
+
+        protected override void Started()
+        {
+            log.Info("Starting MACs Sensor");
+            stopBroadcastPing();
+            this.broadcastCancellation = Helpers.Helper.StartRepetativeTask(broadcastPing, TimeSpan.FromSeconds(1));
+        }
+
+        protected override bool Stopped()
+        {
+            log.Info("Stopping MACs Sensor");
+            return stopBroadcastPing();
+        }
+
+        private bool stopBroadcastPing()
+        {
+            try
+            {
+                if (this.broadcastCancellation != null && !this.broadcastCancellation.IsCancellationRequested)
+                {
+                    broadcastCancellation.Cancel();
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                log.Error("Errpr stopping ping broadcast", ex);
+                return false;
+            }
+        }
+
+        private void broadcastPing()
+        {
+            log.Debug("Starting ping broadcast");
+            try
+            {
+                var startTime = DateTime.Now;
+                var ips = IPInfo.BroadCastPing();
+                log.DebugFormat("Pinged {0} ips in {1} time", ips.Count(), (startTime-DateTime.Now).ToString());
+            }
+            catch (Exception ex)
+            {
+                log.Warn("Error broadcasting ping", ex);
+            }
+        }
+
     }
 }

@@ -43,8 +43,11 @@ namespace HomeControl.Detection
             }
         }
 
-        public abstract void Start();
-        public abstract bool Stop();
+        public virtual void Start() { Started(); }
+        public virtual bool Stop() { return Stopped(); }
+        protected abstract void Started();
+        protected abstract bool Stopped();
+
         protected abstract bool IsStarted { get; }
         public void StartProbeNow()
         {
@@ -112,11 +115,13 @@ namespace HomeControl.Detection
         {
             if (!IsStarted)
             {
+                Started();
                 StartTimer();
             }
         }
         public override bool Stop()
         {
+            Stopped();
             if (cancellationTokenSource != null)
             {
                 if (!cancellationTokenSource.IsCancellationRequested)
