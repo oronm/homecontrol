@@ -64,6 +64,39 @@ namespace HomeControl.Cloud.Managers
                                 new Person("Galia"),
                                 new Person("Oron")                        
                         })}),
+                    new Group("MoradPrime", new Location[] { 
+                        new Location("Home", new Person[] { 
+                                new Person("Shachar"),
+                                new Person("Ilana"),
+                                new Person("Omer")                        
+                        })}),
+                    new Group("Shmaya", new Location[] { 
+                        new Location("Home", new Person[] { 
+                                new Person("Inbal"),
+                                new Person("Itzik"),
+                                new Person("Yoav"),
+                                new Person("Lior"),                        
+                                new Person("Daniel")                        
+                        })}),
+                    new Group("Shtivi", new Location[] { 
+                        new Location("Home", new Person[] { 
+                                new Person("Moshe"),
+                                new Person("Dana"),
+                                new Person("Ido"),
+                                new Person("Amit"),
+                                new Person("Ofri")                        
+                        })}),
+                    new Group("Jivy", new Location[] { 
+                        new Location("Office", new Person[] { 
+                                new Person("Oron"),
+                                new Person("Guy"),
+                                new Person("Yarimi"),
+                                new Person("Omer"),
+                                new Person("Snir"),
+                                new Person("Gil"),
+                                new Person("Dekel"),
+                                new Person("Lou")                        
+                        })}),
                     new Group("Yarimi", new Location[] { 
                         new Location("Home", new Person[] { 
                                 new Person("Or"),
@@ -93,12 +126,13 @@ namespace HomeControl.Cloud.Managers
             var key = new IndexKey(Realm, Group, Location, person.Name);
             log.DebugFormat("updateperssta {0}", key);
             log.DebugFormat("updateperssta index {0}", peopleIndex.Count);
-            
+
+            var oldKey = key;
             key = peopleIndex.Keys.FirstOrDefault(k => k.ToString() == key.ToString());
             log.DebugFormat("updateperssta found key {0}", key == null ? "null" : key.ToString());
             if (key == null || !peopleIndex.TryGetValue(key, out personInState))
             {
-                log.WarnFormat("Couldnt find key {0}", key == null ? "null" : key.ToString());
+                log.WarnFormat("Couldnt find key {0} from {1}", key == null ? "null" : key.ToString(), oldKey);
             }
             else
             {
@@ -200,12 +234,13 @@ namespace HomeControl.Cloud.Managers
             var key = new IndexKey(Realm, Group, Location, Name);
             log.DebugFormat("getpersonstatehistory {0}", key);
 
+            var oldKey = key;
             key = peopleHistory.Keys.FirstOrDefault(k => k.ToString() == key.ToString());
 
             IEnumerable<PersonHistory> result;
             if (key == null || !peopleHistory.TryGetValue(key, out history))
             {
-                log.WarnFormat("Couldnt find key {0}", key == null ? "null" : key.ToString());
+                log.WarnFormat("Couldnt find key {0} from {1}", key == null ? "null" : key.ToString(), oldKey);
                 result = new PersonHistory[] { };
             }
             else
