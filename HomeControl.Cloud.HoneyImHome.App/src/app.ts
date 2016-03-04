@@ -5,6 +5,10 @@ import authconfig from './auth-config';
 import 'fetch';
 import { AuthorizeStep, FetchConfig, AuthService } from 'paulvanbladel/aurelia-auth';
 
+// TODO: sort history
+// TODO: dates as "5 minutes ago" etc...
+// TODO: when history is not enough for timeline
+// TODO: add pictures?
 // TODO: Refresh token?
 
 @autoinject
