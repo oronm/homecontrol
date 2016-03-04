@@ -16,12 +16,6 @@ export class residentHistory {
 
     constructor(private http: HttpClient, name: string, ea: EventAggregator, appconfig: AppConfiguration) {
         this.appconfig = appconfig;
-        //http.configure(config => {
-        //    config
-        //        .useStandardConfiguration()
-        //        .withBaseUrl(this.appconfig.baseUri);
-        //});
-        //this.name = "Oron";
         this.name = name;
         this.ea = ea;
         this.ea.subscribe('showHistory', (command) => {
