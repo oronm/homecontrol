@@ -52,7 +52,10 @@ gulp.task('build-css', function () {
 gulp.task('build', function(callback) {
   return runSequence(
     'clean',
-    ['build-system', 'build-html', 'build-css'],
+    [
+        'build-system', 'build-html', 'build-css'
+    ],
+    'bundle',
     callback
   );
 });
