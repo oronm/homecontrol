@@ -3,9 +3,46 @@
     <require from="./elapsed-format"></require>
     <require from="./residentHistory"></require>
 
+    <style>
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,110,0,0.5); /* Black w/ opacity */
+            -webkit-filter: grayscale(100%);
+            display: block;
+            background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAHElEQVQIW2Ncu3bt/+DgYEYGKIAzMARgKjFUAABdLQgFCI8zzQAAAABJRU5ErkJggg==) repeat;
+        }
+
+        .modal-content {
+            background-color: rgba(255, 255, 255, 0.7); /* Black w/ opacity */
+            margin-top: 35%; /* 15% from the top and centered */
+            margin-left: 15%; /* 15% from the top and centered */
+            /*margin: 15% auto;*/ /* 15% from the top and centered */
+            text-align: center;
+            /*margin-top: 40%;*/
+            /*border: 1px solid #888;*/
+            width: 80%; /* Could be more or less, depending on screen size */
+            height: 5%;
+        }
+
+        .stale
+        {
+            -webkit-filter: grayscale(100%);
+        }
+    </style>
+
     <section>
-        <h2>${heading}</h2>
-        <div class="row au-stagger">
+        <h2>${isStale ? "Home is not responding" : ""}</h2>
+        <div class="${isStale ? 'modal' : '' }">
+            <!--<div class="modal-content">Home is not reporting</div>-->
+        </div>
+        <div class="row au-stagger ${isStale ? 'stale' : '' }">
             <div class="col-sm-6 col-md-3 col-lg-3 col-xs-6 card-container" repeat.for="resident of residents">
                 <div class="card ${resident.IsPresent ? '' : 'notpresent'}" click.trigger="toggleHistory(resident.name)">
                     <canvas class="header-bg" width="100" height="70"></canvas>
@@ -14,8 +51,10 @@
                     </div>
                     <div class="content">
                         <p class="name">${resident.name}</p>
-                        <p class="${resident.IsPresent ? '' : 'hidden'}">Seen: ${resident.lastSeen  | elapsedFormat}</p>
-                        <p class="${resident.IsPresent ? 'hidden' : ''}">Left: ${resident.lastLeft | elapsedFormat}</p>
+                        <div class="${hasBeenSeen(resident) ? '' : 'hidden'}">
+                            <p class="${resident.IsPresent ? '' : 'hidden'}">Seen: ${resident.lastSeen  | elapsedFormat}</p>
+                            <p class="${resident.IsPresent ? 'hidden' : ''}">Left: ${resident.lastLeft | elapsedFormat}</p>
+                        </div>
                     </div>
                 </div>
             </div>

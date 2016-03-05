@@ -3,6 +3,7 @@ export class AppConfiguration {
     historyAction: string;
     stateRefreshInterval: number;
     historyRefreshInterval: number;
+    staleInMinutes = 60;
 
     constructor() {
         this.baseUri = 'http://homecontrol-cloud-honeyimhome.azurewebsites.net/api/State';

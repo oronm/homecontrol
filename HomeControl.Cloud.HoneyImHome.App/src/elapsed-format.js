@@ -12,6 +12,10 @@ export class ElapsedFormatValueConverter {
         {
             result = "Moments Ago";
         }
+        else if (elapsed > 60*60*24*100)
+        {
+            result = "N/A";
+        }
         else
         {
             result = moment(Date.parse(value)).fromNow();

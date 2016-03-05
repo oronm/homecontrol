@@ -15,25 +15,16 @@ export class Users {
     token: string;
     appconfig: AppConfiguration;
     refreshVar: any;
+    isStale: boolean;
 
     constructor(private http: HttpClient, ea: EventAggregator, appconfig: AppConfiguration) {
         console.log("creating users");
         this.appconfig = appconfig;
-        this.configureHTTP();
 
         this.selectedResident = "";
         this.ea = ea;
         this.selectedResident = "";
-    }
-
-    private configureHTTP() {
-        console.log(this.appconfig.baseUri);
-        //this.http.configure(config => {
-        //    config
-        //        .useStandardConfiguration()
-        //        .withBaseUrl(this.appconfig.baseUri);
-        //});
-
+        this.isStale = false;
     }
 
     activate() {
@@ -60,13 +51,11 @@ export class Users {
         }
     }
 
-
-
     refreshResidents(): any {
         this.http.fetch(this.appconfig.baseUri)
             .then(response => response.json())
-            .then(State => this.residents = State)
-        .catch(error => this.residents = []);
+            .then(State => { this.residents = State; this.updateIsStale(); })
+            .catch(error => { this.residents = []; this.updateIsStale(); });
     }
 
     showHistory(name: string) {
@@ -89,5 +78,28 @@ export class Users {
             this.hideHistory();
         else
             this.showHistory(name);
+    }
+
+    hasBeenSeen(resident): boolean {
+        return (resident && resident.lastSeen && new Date(resident.lastSeen).getYear() > 0);
+    }
+
+    updateIsStale() {
+        this.isStale =
+            !this.residents ||
+            this.residents.every(resident => this.isResidentStale(resident));
+    }
+
+    isResidentStale(resident): boolean {
+        if (!resident || !(resident.lastSeen && resident.lastLeft))
+            return true;
+
+        var elapsedSeen = (Date.now() - Date.parse(resident.lastSeen)) / 1000;
+        var elapsedLeft = (Date.now() - Date.parse(resident.lastLeft)) / 1000;
+
+        var staleInSeconds = this.appconfig.staleInMinutes * 60;
+
+        return elapsedLeft >= staleInSeconds || elapsedSeen > staleInSeconds;
+        
     }
 }

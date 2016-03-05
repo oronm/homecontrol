@@ -5,7 +5,7 @@ import authconfig from './auth-config';
 import 'fetch';
 import { AuthorizeStep, FetchConfig, AuthService } from 'paulvanbladel/aurelia-auth';
 
-// TODO: stale state handling
+// TODO: Bundle
 // TODO: add pictures?
 // TODO: Refresh token?
 
