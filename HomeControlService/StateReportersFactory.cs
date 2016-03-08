@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Helpers;
 
 namespace HomeControl.Local
 {
@@ -15,7 +16,9 @@ namespace HomeControl.Local
             var httpReporter = new HttpStateReporter();
             httpReporter.Init(new Dictionary<string, string>
             {
-                { "endpoint", ConfigurationManager.AppSettings["HttpReporter.endpoint"] }
+                { "endpoint", AppSettings.GetValue("HttpReporter.endpoint", "http://homecontrol-cloud-feedmanager.azurewebsites.net/api/State") },
+                { "username", AppSettings.GetValue("HttpReporter.username", "username") },
+                { "password", AppSettings.GetValue("HttpReporter.password", "password") }
             });
 
             reporters = new IStateReporter[] { httpReporter };

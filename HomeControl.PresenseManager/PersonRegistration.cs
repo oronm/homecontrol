@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Helpers;
 using HomeControl.Detection;
 
 namespace HomeControl.PresenceManager
@@ -16,30 +17,12 @@ namespace HomeControl.PresenceManager
 
     public class PersonPresencePolicy
     {
-        //private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        //public TimeSpan MaximumAbsencyAllowed = TimeSpan.FromSeconds(10);
-        public TimeSpan MaximumAbsencyAllowed = TimeSpan.FromMinutes(2);
+        public TimeSpan MaximumAbsencyAllowed;
 
-        //private CancellationTokenSource presenceTimeoutCancellation;
-
-        //private CancellationTokenSource resetTimeoutCancellation()
-        //{
-        //    cancelPresenceTimeout();
-        //    presenceTimeoutCancellation = new CancellationTokenSource();
-        //    return presenceTimeoutCancellation;
-        //}
-        //private void cancelPresenceTimeout()
-        //{
-        //    try
-        //    {
-        //        if (presenceTimeoutCancellation != null) presenceTimeoutCancellation.Cancel(true);
-        //        else log.Warn("CancelPresenceTimeout on null source");
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        log.Error("Error cancelling presence timeout", e);
-        //    }
-        //}
+        public PersonPresencePolicy()
+        {
+            MaximumAbsencyAllowed = TimeSpan.FromMinutes(AppSettings.GetValue("PresenceManager::PersonPresencePolicy::MaximumAbscencyAllowedMinutes", 10));
+        }
     }
 
 }

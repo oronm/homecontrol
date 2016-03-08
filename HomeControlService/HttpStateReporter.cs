@@ -13,15 +13,25 @@ namespace HomeControl.Local
 {
     public class HttpStateReporter : IStateReporter
     {
-        private const string ENDPOINT_CONFIGURATION_KEY = "endpoint";
         private string endpoint;
+        private string username;
+        private string password;
         public void Init(IDictionary<string, string> configuration)
         {
             if (configuration == null) throw new ArgumentNullException("configuration");
-            if (!configuration.TryGetValue(ENDPOINT_CONFIGURATION_KEY, out endpoint) || string.IsNullOrWhiteSpace(endpoint))
+            endpoint = extractConfigValue(configuration, "endpoint");
+            username = extractConfigValue(configuration, "username");
+            password = extractConfigValue(configuration, "password");
+        }
+
+        private string extractConfigValue(IDictionary<string, string> configuration, string key)
+        {
+            string value;
+            if (!configuration.TryGetValue(key, out value) || string.IsNullOrWhiteSpace(value))
             {
-                throw new ArgumentNullException(ENDPOINT_CONFIGURATION_KEY, "Configuration doesnt containt key");
+                throw new ArgumentNullException(key, string.Format("Configuration doesnt containt {0}", key));
             }
+            return value;
         }
 
         private void report(Func <HttpClient, Task<HttpResponseMessage>> reportAction)
@@ -30,7 +40,7 @@ namespace HomeControl.Local
             {
                 var authentication = Convert.ToBase64String(
                     System.Text.ASCIIEncoding.ASCII.GetBytes(
-                        string.Format("{0}:{1}", "oron", "oron")));
+                        string.Format("{0}:{1}", username, password)));
 
                 client.DefaultRequestHeaders.Authorization =
                     new AuthenticationHeaderValue(AuthenticationTypes.Basic, authentication);
