@@ -99,7 +99,7 @@ export class Users {
 
         var staleInSeconds = this.appconfig.staleInMinutes * 60;
 
-        return elapsedLeft >= staleInSeconds || elapsedSeen > staleInSeconds;
+        return elapsedLeft >= staleInSeconds && elapsedSeen > staleInSeconds;
         
     }
 }
