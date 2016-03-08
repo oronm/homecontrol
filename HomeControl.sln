@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeControl.Detection.Netwo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeControlService.Host", "HomeControlService.Host\HomeControlService.Host.csproj", "{53A5B53F-BF5C-4AFC-AAB0-744D73E2E67A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Helpers", "..\Common\Helpers\Helpers.csproj", "{73C414DA-6F7A-4C1A-B393-6B37D172B394}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Helpers", "Helpers\Helpers.csproj", "{73C414DA-6F7A-4C1A-B393-6B37D172B394}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeControl.Detection", "HomeControlCommon\HomeControl.Detection.csproj", "{8C0C56CB-9EB5-40EF-8F6E-78F5C3DA5C3D}"
 EndProject
@@ -35,9 +35,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeControl.Cloud.HoneyImHo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeControl.Cloud.ManagersWcfHost", "HomeControl.Cloud.ManagersWcfHost\HomeControl.Cloud.ManagersWcfHost.csproj", "{5EB206F2-D283-4242-B026-91412830DC85}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Helpers.Network", "..\Common\Helpers.Network\Helpers.Network.csproj", "{B58BA953-4693-499C-B528-3D5526225643}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Helpers.Network", "Helpers.Network\Helpers.Network.csproj", "{B58BA953-4693-499C-B528-3D5526225643}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Helpers.Network.WiFi", "..\Common\Helpers.Network.WiFi\Helpers.Network.WiFi.csproj", "{B041220D-A288-4C4D-9FAD-F9CC25DF5019}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Helpers.Network.WiFi", "Helpers.Network.WiFi\Helpers.Network.WiFi.csproj", "{B041220D-A288-4C4D-9FAD-F9CC25DF5019}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
